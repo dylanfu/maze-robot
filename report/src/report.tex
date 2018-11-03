@@ -1,0 +1,70 @@
+\documentclass[10pt,a4paper,oneside]{article}
+%NOTE: This report format is 
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage[T1,OT1]{fontenc}
+\usepackage{multicol}
+\usepackage{lipsum}
+\usepackage{float}
+\usepackage{siunitx}
+\usepackage{wrapfig}
+\usepackage{setspace}
+% \usepackage[document]{ragged2e}
+\singlespacing
+\newcommand{\hsc}[1]{{\normalsize\MakeUppercase{#1}}}
+% \usepackage{geometry}
+% \geometry{top=1.5cm,bottom=1.5cm}
+
+
+\newcommand{\reporttitle}{Pacman Line Following Robot: Technical Report}
+\newcommand{\reportauthorOne}{Amal \textbf{C\hsc{HANDRA} - acha932}}
+\newcommand{\cidOne}{890345562}
+\newcommand{\reportauthorTwo}{Dylan \textbf{F\hsc U - dfu987}}
+\newcommand{\cidTwo}{165746216}
+\newcommand{\reportauthorThree}{Quentin \textbf{H\hsc{ENG} - qhen143}}
+\newcommand{\cidThree}{775834627}
+\newcommand{\reportauthorFour}{Louis \textbf{P\hsc{IENAAR} - lpie601}}
+\newcommand{\cidFour}{488462824}
+\newcommand{\reporttype}{Coursework}
+\bibliographystyle{plain}
+
+% include files that load packages and define macros
+\input{includes} % various packages needed for maths etc.
+\input{notation} % short-hand notation and macros
+\setlength{\columnsep}{1cm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+% front page
+\input{titlepage}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%% table of content
+%If a table of content is needed, simply uncomment the following lines
+% \tableofcontents
+% \newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% Main document
+\begin{multicols}{2}
+\input{overview.tex}
+\input{analogue.tex}
+\end{multicols}
+\newpage
+\begin{multicols}{2}
+\input{digital.tex}
+\input{conclusions.tex}
+\end{multicols}
+
+
+\input{appendices.tex}
+\input{datasheet.tex}
+
+% \newpage
+% \bibliography{mybib}
+
+
+\end{document}
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 

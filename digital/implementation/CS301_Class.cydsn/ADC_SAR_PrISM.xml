@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Name="ADC_SAR_PrISM">
+  <Version>2.1</Version>
+  <Keyword>ADC_SAR</Keyword>
+  <Keyword>PrISM</Keyword>
+  <Keyword>DMA</Keyword>
+  <Keyword>ISR</Keyword>
+  <Description>This datasheet example project demonstrates operation of the ADC_SAR (ADC Successive Approximation Register) and PrISM (Precision Illumination Signal Modulation) components with the PSoC Creator Software. The ADC_SAR measurements are transferred using ISR and DMA to the PrISM and Character LCD components.</Description>
+  <DeviceFilter>PSoC 5LP</DeviceFilter>
+  <Document>ADC_SAR_PrISM.pdf</Document>
+</Project>

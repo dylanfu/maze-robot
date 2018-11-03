@@ -1,0 +1,4014 @@
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.file	"tacho.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.global	quad_cnt_left
+  19              		.bss
+  20              		.align	1
+  21              		.type	quad_cnt_left, %object
+  22              		.size	quad_cnt_left, 2
+  23              	quad_cnt_left:
+  24 0000 0000     		.space	2
+  25              		.global	quad_cnt_right
+  26              		.align	1
+  27              		.type	quad_cnt_right, %object
+  28              		.size	quad_cnt_right, 2
+  29              	quad_cnt_right:
+  30 0002 0000     		.space	2
+  31              		.global	quad_cnt_prev
+  32              		.align	1
+  33              		.type	quad_cnt_prev, %object
+  34              		.size	quad_cnt_prev, 2
+  35              	quad_cnt_prev:
+  36 0004 0000     		.space	2
+  37              		.global	straight_line_distance
+  38              		.type	straight_line_distance, %object
+  39              		.size	straight_line_distance, 1
+  40              	straight_line_distance:
+  41 0006 00       		.space	1
+  42              		.global	distance_prev
+  43              		.type	distance_prev, %object
+  44              		.size	distance_prev, 1
+  45              	distance_prev:
+  46 0007 00       		.space	1
+  47              		.global	pwm_cmp_left
+  48              		.data
+  49              		.type	pwm_cmp_left, %object
+  50              		.size	pwm_cmp_left, 1
+  51              	pwm_cmp_left:
+  52 0000 73       		.byte	115
+  53              		.global	pwm_cmp_right
+  54              		.type	pwm_cmp_right, %object
+  55              		.size	pwm_cmp_right, 1
+  56              	pwm_cmp_right:
+  57 0001 75       		.byte	117
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 2
+
+
+  58              		.global	robot_direction
+  59              		.type	robot_direction, %object
+  60              		.size	robot_direction, 1
+  61              	robot_direction:
+  62 0002 02       		.byte	2
+  63              		.global	robot_x_pos
+  64              		.type	robot_x_pos, %object
+  65              		.size	robot_x_pos, 1
+  66              	robot_x_pos:
+  67 0003 01       		.byte	1
+  68              		.global	robot_y_pos
+  69              		.type	robot_y_pos, %object
+  70              		.size	robot_y_pos, 1
+  71              	robot_y_pos:
+  72 0004 01       		.byte	1
+  73              		.global	num_map_nodes
+  74              		.bss
+  75              		.align	1
+  76              		.type	num_map_nodes, %object
+  77              		.size	num_map_nodes, 2
+  78              	num_map_nodes:
+  79 0008 0000     		.space	2
+  80              		.global	orientation
+  81              		.data
+  82 0005 000000   		.align	2
+  83              		.type	orientation, %object
+  84              		.size	orientation, 8
+  85              	orientation:
+  86 0008 FF       		.byte	-1
+  87 0009 00       		.byte	0
+  88 000a 00       		.byte	0
+  89 000b 01       		.byte	1
+  90 000c 01       		.byte	1
+  91 000d 00       		.byte	0
+  92 000e 00       		.byte	0
+  93 000f FF       		.byte	-1
+  94              		.global	robot_orientation
+  95              		.type	robot_orientation, %object
+  96              		.size	robot_orientation, 1
+  97              	robot_orientation:
+  98 0010 02       		.byte	2
+  99              		.global	path_orientation
+ 100 0011 000000   		.align	2
+ 101              		.type	path_orientation, %object
+ 102              		.size	path_orientation, 4
+ 103              	path_orientation:
+ 104 0014 04000000 		.word	orientation+4
+ 105              		.global	path_index
+ 106              		.bss
+ 107              		.align	1
+ 108              		.type	path_index, %object
+ 109              		.size	path_index, 2
+ 110              	path_index:
+ 111 000a 0000     		.space	2
+ 112              		.global	robot_position_index
+ 113              		.align	1
+ 114              		.type	robot_position_index, %object
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 3
+
+
+ 115              		.size	robot_position_index, 2
+ 116              	robot_position_index:
+ 117 000c 0000     		.space	2
+ 118              		.global	next_event_index
+ 119              		.align	1
+ 120              		.type	next_event_index, %object
+ 121              		.size	next_event_index, 2
+ 122              	next_event_index:
+ 123 000e 0000     		.space	2
+ 124              		.global	flag_turn_around
+ 125              		.type	flag_turn_around, %object
+ 126              		.size	flag_turn_around, 1
+ 127              	flag_turn_around:
+ 128 0010 00       		.space	1
+ 129              		.global	flag_veering
+ 130              		.type	flag_veering, %object
+ 131              		.size	flag_veering, 1
+ 132              	flag_veering:
+ 133 0011 00       		.space	1
+ 134              		.global	flag_new_path_index
+ 135              		.type	flag_new_path_index, %object
+ 136              		.size	flag_new_path_index, 1
+ 137              	flag_new_path_index:
+ 138 0012 00       		.space	1
+ 139              		.global	flag_passing_next_int
+ 140              		.type	flag_passing_next_int, %object
+ 141              		.size	flag_passing_next_int, 1
+ 142              	flag_passing_next_int:
+ 143 0013 00       		.space	1
+ 144              		.global	flag_next_event_deadend
+ 145              		.type	flag_next_event_deadend, %object
+ 146              		.size	flag_next_event_deadend, 1
+ 147              	flag_next_event_deadend:
+ 148 0014 00       		.space	1
+ 149              		.global	flag_next_event_u_turn
+ 150              		.type	flag_next_event_u_turn, %object
+ 151              		.size	flag_next_event_u_turn, 1
+ 152              	flag_next_event_u_turn:
+ 153 0015 00       		.space	1
+ 154              		.global	flag_centre_on_line_after_turn
+ 155              		.type	flag_centre_on_line_after_turn, %object
+ 156              		.size	flag_centre_on_line_after_turn, 1
+ 157              	flag_centre_on_line_after_turn:
+ 158 0016 00       		.space	1
+ 159              		.global	flag_next_event_intersection
+ 160              		.type	flag_next_event_intersection, %object
+ 161              		.size	flag_next_event_intersection, 1
+ 162              	flag_next_event_intersection:
+ 163 0017 00       		.space	1
+ 164              		.global	int_sensor_left
+ 165              		.type	int_sensor_left, %object
+ 166              		.size	int_sensor_left, 1
+ 167              	int_sensor_left:
+ 168 0018 00       		.space	1
+ 169              		.global	int_sensor_right
+ 170              		.type	int_sensor_right, %object
+ 171              		.size	int_sensor_right, 1
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 4
+
+
+ 172              	int_sensor_right:
+ 173 0019 00       		.space	1
+ 174              		.global	line_sensor_centre
+ 175              		.type	line_sensor_centre, %object
+ 176              		.size	line_sensor_centre, 1
+ 177              	line_sensor_centre:
+ 178 001a 00       		.space	1
+ 179              		.global	line_sensor_left
+ 180              		.type	line_sensor_left, %object
+ 181              		.size	line_sensor_left, 1
+ 182              	line_sensor_left:
+ 183 001b 00       		.space	1
+ 184              		.global	line_sensor_right
+ 185              		.type	line_sensor_right, %object
+ 186              		.size	line_sensor_right, 1
+ 187              	line_sensor_right:
+ 188 001c 00       		.space	1
+ 189              		.global	tc_cnt
+ 190 001d 00       		.align	1
+ 191              		.type	tc_cnt, %object
+ 192              		.size	tc_cnt, 2
+ 193              	tc_cnt:
+ 194 001e 0000     		.space	2
+ 195              		.global	flag_adc_ready
+ 196              		.type	flag_adc_ready, %object
+ 197              		.size	flag_adc_ready, 1
+ 198              	flag_adc_ready:
+ 199 0020 00       		.space	1
+ 200              		.global	map
+ 201 0021 00       		.data
+ 202              		.align	2
+ 203              		.type	map, %object
+ 204              		.size	map, 1140
+ 205              	map:
+ 206 0018 01000000 		.word	1
+ 207 001c 01000000 		.word	1
+ 208 0020 01000000 		.word	1
+ 209 0024 01000000 		.word	1
+ 210 0028 01000000 		.word	1
+ 211 002c 01000000 		.word	1
+ 212 0030 01000000 		.word	1
+ 213 0034 01000000 		.word	1
+ 214 0038 01000000 		.word	1
+ 215 003c 01000000 		.word	1
+ 216 0040 01000000 		.word	1
+ 217 0044 01000000 		.word	1
+ 218 0048 01000000 		.word	1
+ 219 004c 01000000 		.word	1
+ 220 0050 01000000 		.word	1
+ 221 0054 01000000 		.word	1
+ 222 0058 01000000 		.word	1
+ 223 005c 01000000 		.word	1
+ 224 0060 01000000 		.word	1
+ 225 0064 01000000 		.word	1
+ 226 0068 00000000 		.word	0
+ 227 006c 01000000 		.word	1
+ 228 0070 00000000 		.word	0
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 5
+
+
+ 229 0074 00000000 		.word	0
+ 230 0078 00000000 		.word	0
+ 231 007c 00000000 		.word	0
+ 232 0080 00000000 		.word	0
+ 233 0084 00000000 		.word	0
+ 234 0088 00000000 		.word	0
+ 235 008c 00000000 		.word	0
+ 236 0090 00000000 		.word	0
+ 237 0094 00000000 		.word	0
+ 238 0098 00000000 		.word	0
+ 239 009c 00000000 		.word	0
+ 240 00a0 00000000 		.word	0
+ 241 00a4 00000000 		.word	0
+ 242 00a8 00000000 		.word	0
+ 243 00ac 01000000 		.word	1
+ 244 00b0 01000000 		.word	1
+ 245 00b4 00000000 		.word	0
+ 246 00b8 01000000 		.word	1
+ 247 00bc 00000000 		.word	0
+ 248 00c0 01000000 		.word	1
+ 249 00c4 00000000 		.word	0
+ 250 00c8 01000000 		.word	1
+ 251 00cc 01000000 		.word	1
+ 252 00d0 01000000 		.word	1
+ 253 00d4 00000000 		.word	0
+ 254 00d8 01000000 		.word	1
+ 255 00dc 01000000 		.word	1
+ 256 00e0 01000000 		.word	1
+ 257 00e4 00000000 		.word	0
+ 258 00e8 01000000 		.word	1
+ 259 00ec 01000000 		.word	1
+ 260 00f0 01000000 		.word	1
+ 261 00f4 00000000 		.word	0
+ 262 00f8 01000000 		.word	1
+ 263 00fc 01000000 		.word	1
+ 264 0100 00000000 		.word	0
+ 265 0104 01000000 		.word	1
+ 266 0108 00000000 		.word	0
+ 267 010c 01000000 		.word	1
+ 268 0110 00000000 		.word	0
+ 269 0114 01000000 		.word	1
+ 270 0118 00000000 		.word	0
+ 271 011c 01000000 		.word	1
+ 272 0120 00000000 		.word	0
+ 273 0124 00000000 		.word	0
+ 274 0128 00000000 		.word	0
+ 275 012c 01000000 		.word	1
+ 276 0130 00000000 		.word	0
+ 277 0134 00000000 		.word	0
+ 278 0138 00000000 		.word	0
+ 279 013c 01000000 		.word	1
+ 280 0140 00000000 		.word	0
+ 281 0144 01000000 		.word	1
+ 282 0148 01000000 		.word	1
+ 283 014c 00000000 		.word	0
+ 284 0150 01000000 		.word	1
+ 285 0154 00000000 		.word	0
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 6
+
+
+ 286 0158 01000000 		.word	1
+ 287 015c 00000000 		.word	0
+ 288 0160 00000000 		.word	0
+ 289 0164 00000000 		.word	0
+ 290 0168 01000000 		.word	1
+ 291 016c 01000000 		.word	1
+ 292 0170 01000000 		.word	1
+ 293 0174 00000000 		.word	0
+ 294 0178 01000000 		.word	1
+ 295 017c 01000000 		.word	1
+ 296 0180 01000000 		.word	1
+ 297 0184 01000000 		.word	1
+ 298 0188 01000000 		.word	1
+ 299 018c 00000000 		.word	0
+ 300 0190 01000000 		.word	1
+ 301 0194 01000000 		.word	1
+ 302 0198 00000000 		.word	0
+ 303 019c 00000000 		.word	0
+ 304 01a0 00000000 		.word	0
+ 305 01a4 00000000 		.word	0
+ 306 01a8 00000000 		.word	0
+ 307 01ac 01000000 		.word	1
+ 308 01b0 00000000 		.word	0
+ 309 01b4 00000000 		.word	0
+ 310 01b8 00000000 		.word	0
+ 311 01bc 01000000 		.word	1
+ 312 01c0 00000000 		.word	0
+ 313 01c4 01000000 		.word	1
+ 314 01c8 00000000 		.word	0
+ 315 01cc 00000000 		.word	0
+ 316 01d0 00000000 		.word	0
+ 317 01d4 00000000 		.word	0
+ 318 01d8 00000000 		.word	0
+ 319 01dc 01000000 		.word	1
+ 320 01e0 01000000 		.word	1
+ 321 01e4 01000000 		.word	1
+ 322 01e8 01000000 		.word	1
+ 323 01ec 01000000 		.word	1
+ 324 01f0 01000000 		.word	1
+ 325 01f4 01000000 		.word	1
+ 326 01f8 01000000 		.word	1
+ 327 01fc 00000000 		.word	0
+ 328 0200 01000000 		.word	1
+ 329 0204 00000000 		.word	0
+ 330 0208 01000000 		.word	1
+ 331 020c 00000000 		.word	0
+ 332 0210 01000000 		.word	1
+ 333 0214 00000000 		.word	0
+ 334 0218 01000000 		.word	1
+ 335 021c 01000000 		.word	1
+ 336 0220 01000000 		.word	1
+ 337 0224 00000000 		.word	0
+ 338 0228 01000000 		.word	1
+ 339 022c 01000000 		.word	1
+ 340 0230 00000000 		.word	0
+ 341 0234 00000000 		.word	0
+ 342 0238 00000000 		.word	0
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 7
+
+
+ 343 023c 00000000 		.word	0
+ 344 0240 00000000 		.word	0
+ 345 0244 00000000 		.word	0
+ 346 0248 00000000 		.word	0
+ 347 024c 01000000 		.word	1
+ 348 0250 00000000 		.word	0
+ 349 0254 01000000 		.word	1
+ 350 0258 00000000 		.word	0
+ 351 025c 01000000 		.word	1
+ 352 0260 00000000 		.word	0
+ 353 0264 01000000 		.word	1
+ 354 0268 00000000 		.word	0
+ 355 026c 00000000 		.word	0
+ 356 0270 00000000 		.word	0
+ 357 0274 01000000 		.word	1
+ 358 0278 01000000 		.word	1
+ 359 027c 01000000 		.word	1
+ 360 0280 01000000 		.word	1
+ 361 0284 00000000 		.word	0
+ 362 0288 01000000 		.word	1
+ 363 028c 00000000 		.word	0
+ 364 0290 01000000 		.word	1
+ 365 0294 01000000 		.word	1
+ 366 0298 01000000 		.word	1
+ 367 029c 01000000 		.word	1
+ 368 02a0 01000000 		.word	1
+ 369 02a4 00000000 		.word	0
+ 370 02a8 01000000 		.word	1
+ 371 02ac 00000000 		.word	0
+ 372 02b0 01000000 		.word	1
+ 373 02b4 00000000 		.word	0
+ 374 02b8 01000000 		.word	1
+ 375 02bc 01000000 		.word	1
+ 376 02c0 01000000 		.word	1
+ 377 02c4 01000000 		.word	1
+ 378 02c8 00000000 		.word	0
+ 379 02cc 00000000 		.word	0
+ 380 02d0 00000000 		.word	0
+ 381 02d4 01000000 		.word	1
+ 382 02d8 00000000 		.word	0
+ 383 02dc 01000000 		.word	1
+ 384 02e0 00000000 		.word	0
+ 385 02e4 00000000 		.word	0
+ 386 02e8 00000000 		.word	0
+ 387 02ec 01000000 		.word	1
+ 388 02f0 00000000 		.word	0
+ 389 02f4 00000000 		.word	0
+ 390 02f8 00000000 		.word	0
+ 391 02fc 01000000 		.word	1
+ 392 0300 00000000 		.word	0
+ 393 0304 00000000 		.word	0
+ 394 0308 00000000 		.word	0
+ 395 030c 01000000 		.word	1
+ 396 0310 01000000 		.word	1
+ 397 0314 00000000 		.word	0
+ 398 0318 01000000 		.word	1
+ 399 031c 01000000 		.word	1
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 8
+
+
+ 400 0320 01000000 		.word	1
+ 401 0324 00000000 		.word	0
+ 402 0328 01000000 		.word	1
+ 403 032c 00000000 		.word	0
+ 404 0330 01000000 		.word	1
+ 405 0334 00000000 		.word	0
+ 406 0338 01000000 		.word	1
+ 407 033c 00000000 		.word	0
+ 408 0340 01000000 		.word	1
+ 409 0344 01000000 		.word	1
+ 410 0348 01000000 		.word	1
+ 411 034c 01000000 		.word	1
+ 412 0350 01000000 		.word	1
+ 413 0354 00000000 		.word	0
+ 414 0358 01000000 		.word	1
+ 415 035c 01000000 		.word	1
+ 416 0360 00000000 		.word	0
+ 417 0364 00000000 		.word	0
+ 418 0368 00000000 		.word	0
+ 419 036c 00000000 		.word	0
+ 420 0370 00000000 		.word	0
+ 421 0374 00000000 		.word	0
+ 422 0378 00000000 		.word	0
+ 423 037c 01000000 		.word	1
+ 424 0380 00000000 		.word	0
+ 425 0384 00000000 		.word	0
+ 426 0388 00000000 		.word	0
+ 427 038c 00000000 		.word	0
+ 428 0390 00000000 		.word	0
+ 429 0394 01000000 		.word	1
+ 430 0398 00000000 		.word	0
+ 431 039c 00000000 		.word	0
+ 432 03a0 00000000 		.word	0
+ 433 03a4 01000000 		.word	1
+ 434 03a8 01000000 		.word	1
+ 435 03ac 00000000 		.word	0
+ 436 03b0 01000000 		.word	1
+ 437 03b4 01000000 		.word	1
+ 438 03b8 01000000 		.word	1
+ 439 03bc 01000000 		.word	1
+ 440 03c0 01000000 		.word	1
+ 441 03c4 01000000 		.word	1
+ 442 03c8 01000000 		.word	1
+ 443 03cc 00000000 		.word	0
+ 444 03d0 01000000 		.word	1
+ 445 03d4 01000000 		.word	1
+ 446 03d8 01000000 		.word	1
+ 447 03dc 01000000 		.word	1
+ 448 03e0 01000000 		.word	1
+ 449 03e4 00000000 		.word	0
+ 450 03e8 01000000 		.word	1
+ 451 03ec 01000000 		.word	1
+ 452 03f0 01000000 		.word	1
+ 453 03f4 01000000 		.word	1
+ 454 03f8 00000000 		.word	0
+ 455 03fc 00000000 		.word	0
+ 456 0400 00000000 		.word	0
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 9
+
+
+ 457 0404 00000000 		.word	0
+ 458 0408 00000000 		.word	0
+ 459 040c 00000000 		.word	0
+ 460 0410 00000000 		.word	0
+ 461 0414 01000000 		.word	1
+ 462 0418 00000000 		.word	0
+ 463 041c 00000000 		.word	0
+ 464 0420 00000000 		.word	0
+ 465 0424 00000000 		.word	0
+ 466 0428 00000000 		.word	0
+ 467 042c 00000000 		.word	0
+ 468 0430 00000000 		.word	0
+ 469 0434 00000000 		.word	0
+ 470 0438 00000000 		.word	0
+ 471 043c 01000000 		.word	1
+ 472 0440 01000000 		.word	1
+ 473 0444 01000000 		.word	1
+ 474 0448 01000000 		.word	1
+ 475 044c 01000000 		.word	1
+ 476 0450 01000000 		.word	1
+ 477 0454 01000000 		.word	1
+ 478 0458 01000000 		.word	1
+ 479 045c 01000000 		.word	1
+ 480 0460 01000000 		.word	1
+ 481 0464 01000000 		.word	1
+ 482 0468 01000000 		.word	1
+ 483 046c 01000000 		.word	1
+ 484 0470 01000000 		.word	1
+ 485 0474 01000000 		.word	1
+ 486 0478 01000000 		.word	1
+ 487 047c 01000000 		.word	1
+ 488 0480 01000000 		.word	1
+ 489 0484 01000000 		.word	1
+ 490 0488 01000000 		.word	1
+ 491              		.global	food_list
+ 492              		.align	2
+ 493              		.type	food_list, %object
+ 494              		.size	food_list, 48
+ 495              	food_list:
+ 496 048c 05000000 		.word	5
+ 497 0490 04000000 		.word	4
+ 498 0494 01000000 		.word	1
+ 499 0498 07000000 		.word	7
+ 500 049c 05000000 		.word	5
+ 501 04a0 0B000000 		.word	11
+ 502 04a4 0B000000 		.word	11
+ 503 04a8 0A000000 		.word	10
+ 504 04ac 08000000 		.word	8
+ 505 04b0 05000000 		.word	5
+ 506 04b4 02000000 		.word	2
+ 507 04b8 11000000 		.word	17
+ 508              		.section	.text.follow_path,"ax",%progbits
+ 509              		.align	2
+ 510              		.global	follow_path
+ 511              		.thumb
+ 512              		.thumb_func
+ 513              		.type	follow_path, %function
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 10
+
+
+ 514              	follow_path:
+ 515              	.LFB63:
+ 516              		.file 1 ".\\tacho.c"
+   1:.\tacho.c     **** /* ========================================
+   2:.\tacho.c     ****  *
+   3:.\tacho.c     ****  * Copyright YOUR COMPANY, THE YEAR
+   4:.\tacho.c     ****  * All Rights Reserved
+   5:.\tacho.c     ****  * UNPUBLISHED, LICENSED SOFTWARE.
+   6:.\tacho.c     ****  *
+   7:.\tacho.c     ****  * CONFIDENTIAL AND PROPRIETARY INFORMATION
+   8:.\tacho.c     ****  * WHICH IS THE PROPERTY OF your company.
+   9:.\tacho.c     ****  *
+  10:.\tacho.c     ****  * ========================================
+  11:.\tacho.c     **** */
+  12:.\tacho.c     **** 
+  13:.\tacho.c     **** #include <stdio.h>
+  14:.\tacho.c     **** #include <string.h>
+  15:.\tacho.c     **** #include <stdlib.h>
+  16:.\tacho.c     **** #include <math.h>
+  17:.\tacho.c     **** #include <project.h>
+  18:.\tacho.c     **** //* ========================================
+  19:.\tacho.c     **** #include "defines.h"
+  20:.\tacho.c     **** #include "tacho.h"
+  21:.\tacho.c     **** #include "vars.h"
+  22:.\tacho.c     **** #include "map.h"
+  23:.\tacho.c     **** //* ========================================
+  24:.\tacho.c     **** //* Robot Path Follower Logic */
+  25:.\tacho.c     **** //* ========================================
+  26:.\tacho.c     **** uint8 follow_path(int8 path[][2], uint16 path_length)
+  27:.\tacho.c     **** {
+ 517              		.loc 1 27 0
+ 518              		.cfi_startproc
+ 519              		@ args = 0, pretend = 0, frame = 8
+ 520              		@ frame_needed = 1, uses_anonymous_args = 0
+ 521 0000 80B5     		push	{r7, lr}
+ 522              		.cfi_def_cfa_offset 8
+ 523              		.cfi_offset 7, -8
+ 524              		.cfi_offset 14, -4
+ 525 0002 82B0     		sub	sp, sp, #8
+ 526              		.cfi_def_cfa_offset 16
+ 527 0004 00AF     		add	r7, sp, #0
+ 528              		.cfi_def_cfa_register 7
+ 529 0006 7860     		str	r0, [r7, #4]
+ 530 0008 0B46     		mov	r3, r1
+ 531 000a 7B80     		strh	r3, [r7, #2]	@ movhi
+  28:.\tacho.c     ****     // determine whether path event has changed path orienatation and turn accordingly
+  29:.\tacho.c     **** 	if (flag_new_path_index) {
+ 532              		.loc 1 29 0
+ 533 000c 794B     		ldr	r3, .L21
+ 534 000e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 535 0010 002B     		cmp	r3, #0
+ 536 0012 3CD0     		beq	.L2
+  30:.\tacho.c     ****         // return 0 if end of path is reached
+  31:.\tacho.c     ****         if (path_index == path_length-1)
+ 537              		.loc 1 31 0
+ 538 0014 784B     		ldr	r3, .L21+4
+ 539 0016 1B88     		ldrh	r3, [r3]
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 11
+
+
+ 540 0018 1A46     		mov	r2, r3
+ 541 001a 7B88     		ldrh	r3, [r7, #2]
+ 542 001c 013B     		subs	r3, r3, #1
+ 543 001e 9A42     		cmp	r2, r3
+ 544 0020 01D1     		bne	.L3
+  32:.\tacho.c     ****             return 0;
+ 545              		.loc 1 32 0
+ 546 0022 0023     		movs	r3, #0
+ 547 0024 E2E0     		b	.L4
+ 548              	.L3:
+  33:.\tacho.c     **** 		// otherwise determine whether current orientation follows path
+  34:.\tacho.c     **** 		else if (NEXT_ROW(path_index) != path[path_index+1][0] || NEXT_COL(path_index) != path[path_index
+ 549              		.loc 1 34 0
+ 550 0026 744B     		ldr	r3, .L21+4
+ 551 0028 1B88     		ldrh	r3, [r3]
+ 552 002a 5B00     		lsls	r3, r3, #1
+ 553 002c 7A68     		ldr	r2, [r7, #4]
+ 554 002e 1344     		add	r3, r3, r2
+ 555 0030 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 556 0032 5AB2     		sxtb	r2, r3
+ 557 0034 714B     		ldr	r3, .L21+8
+ 558 0036 1B68     		ldr	r3, [r3]
+ 559 0038 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 560 003a 5BB2     		sxtb	r3, r3
+ 561 003c 1A44     		add	r2, r2, r3
+ 562 003e 6E4B     		ldr	r3, .L21+4
+ 563 0040 1B88     		ldrh	r3, [r3]
+ 564 0042 0133     		adds	r3, r3, #1
+ 565 0044 5B00     		lsls	r3, r3, #1
+ 566 0046 7968     		ldr	r1, [r7, #4]
+ 567 0048 0B44     		add	r3, r3, r1
+ 568 004a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 569 004c 5BB2     		sxtb	r3, r3
+ 570 004e 9A42     		cmp	r2, r3
+ 571 0050 16D1     		bne	.L5
+ 572              		.loc 1 34 0 is_stmt 0 discriminator 1
+ 573 0052 694B     		ldr	r3, .L21+4
+ 574 0054 1B88     		ldrh	r3, [r3]
+ 575 0056 5B00     		lsls	r3, r3, #1
+ 576 0058 7A68     		ldr	r2, [r7, #4]
+ 577 005a 1344     		add	r3, r3, r2
+ 578 005c 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 579 005e 5AB2     		sxtb	r2, r3
+ 580 0060 664B     		ldr	r3, .L21+8
+ 581 0062 1B68     		ldr	r3, [r3]
+ 582 0064 0133     		adds	r3, r3, #1
+ 583 0066 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 584 0068 5BB2     		sxtb	r3, r3
+ 585 006a 1A44     		add	r2, r2, r3
+ 586 006c 624B     		ldr	r3, .L21+4
+ 587 006e 1B88     		ldrh	r3, [r3]
+ 588 0070 0133     		adds	r3, r3, #1
+ 589 0072 5B00     		lsls	r3, r3, #1
+ 590 0074 7968     		ldr	r1, [r7, #4]
+ 591 0076 0B44     		add	r3, r3, r1
+ 592 0078 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 593 007a 5BB2     		sxtb	r3, r3
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 12
+
+
+ 594 007c 9A42     		cmp	r2, r3
+ 595 007e 02D0     		beq	.L6
+ 596              	.L5:
+  35:.\tacho.c     ****             // turn robot and reset quadrature if path does not continue straight ahead
+  36:.\tacho.c     ****             turn_robot(path);
+ 597              		.loc 1 36 0 is_stmt 1
+ 598 0080 7868     		ldr	r0, [r7, #4]
+ 599 0082 FFF7FEFF 		bl	turn_robot
+ 600              	.L6:
+  37:.\tacho.c     ****             //flag_turning = 1;
+  38:.\tacho.c     ****         }
+  39:.\tacho.c     ****         // reset flag
+  40:.\tacho.c     **** 		flag_new_path_index = 0;
+ 601              		.loc 1 40 0
+ 602 0086 5B4B     		ldr	r3, .L21
+ 603 0088 0022     		movs	r2, #0
+ 604 008a 1A70     		strb	r2, [r3]
+ 605 008c ADE0     		b	.L7
+ 606              	.L2:
+  41:.\tacho.c     **** 	}
+  42:.\tacho.c     **** 	// find next intersection, dead end or pellet in line event on path
+  43:.\tacho.c     **** 	else if (next_event_index == path_index) {
+ 607              		.loc 1 43 0
+ 608 008e 5C4B     		ldr	r3, .L21+12
+ 609 0090 1A88     		ldrh	r2, [r3]
+ 610 0092 594B     		ldr	r3, .L21+4
+ 611 0094 1B88     		ldrh	r3, [r3]
+ 612 0096 9A42     		cmp	r2, r3
+ 613 0098 05D1     		bne	.L8
+  44:.\tacho.c     ****         get_next_event_index(path, path_length);
+ 614              		.loc 1 44 0
+ 615 009a 7B88     		ldrh	r3, [r7, #2]
+ 616 009c 7868     		ldr	r0, [r7, #4]
+ 617 009e 1946     		mov	r1, r3
+ 618 00a0 FFF7FEFF 		bl	get_next_event_index
+ 619 00a4 A1E0     		b	.L7
+ 620              	.L8:
+  45:.\tacho.c     ****     }
+  46:.\tacho.c     ****     // poll quadrature to determine robot position if next event is pellet in line
+  47:.\tacho.c     ****     else if (flag_next_event_u_turn) {
+ 621              		.loc 1 47 0
+ 622 00a6 574B     		ldr	r3, .L21+16
+ 623 00a8 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 624 00aa 002B     		cmp	r3, #0
+ 625 00ac 18D0     		beq	.L9
+  48:.\tacho.c     ****         if (robot_position_index == next_event_index) {
+ 626              		.loc 1 48 0
+ 627 00ae 564B     		ldr	r3, .L21+20
+ 628 00b0 1A88     		ldrh	r2, [r3]
+ 629 00b2 534B     		ldr	r3, .L21+12
+ 630 00b4 1B88     		ldrh	r3, [r3]
+ 631 00b6 9A42     		cmp	r2, r3
+ 632 00b8 0AD1     		bne	.L10
+  49:.\tacho.c     ****             // update path index
+  50:.\tacho.c     ****             path_index = next_event_index;
+ 633              		.loc 1 50 0
+ 634 00ba 514B     		ldr	r3, .L21+12
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 13
+
+
+ 635 00bc 1A88     		ldrh	r2, [r3]
+ 636 00be 4E4B     		ldr	r3, .L21+4
+ 637 00c0 1A80     		strh	r2, [r3]	@ movhi
+  51:.\tacho.c     ****             
+  52:.\tacho.c     ****             // set flags
+  53:.\tacho.c     ****     		flag_new_path_index = 1;
+ 638              		.loc 1 53 0
+ 639 00c2 4C4B     		ldr	r3, .L21
+ 640 00c4 0122     		movs	r2, #1
+ 641 00c6 1A70     		strb	r2, [r3]
+  54:.\tacho.c     ****             flag_next_event_u_turn = 0;
+ 642              		.loc 1 54 0
+ 643 00c8 4E4B     		ldr	r3, .L21+16
+ 644 00ca 0022     		movs	r2, #0
+ 645 00cc 1A70     		strb	r2, [r3]
+ 646 00ce 8CE0     		b	.L7
+ 647              	.L10:
+  55:.\tacho.c     ****         }
+  56:.\tacho.c     ****         else {
+  57:.\tacho.c     ****             follow_line();
+ 648              		.loc 1 57 0
+ 649 00d0 FFF7FEFF 		bl	follow_line
+  58:.\tacho.c     ****             update_robot_position(path, path_length);
+ 650              		.loc 1 58 0
+ 651 00d4 7B88     		ldrh	r3, [r7, #2]
+ 652 00d6 7868     		ldr	r0, [r7, #4]
+ 653 00d8 1946     		mov	r1, r3
+ 654 00da FFF7FEFF 		bl	update_robot_position
+ 655 00de 84E0     		b	.L7
+ 656              	.L9:
+  59:.\tacho.c     ****         }
+  60:.\tacho.c     ****     }
+  61:.\tacho.c     ****     // ensure centre sensor is back on line before polling for dead ends after turn
+  62:.\tacho.c     ****     else if (flag_next_event_deadend) {
+ 657              		.loc 1 62 0
+ 658 00e0 4A4B     		ldr	r3, .L21+24
+ 659 00e2 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 660 00e4 002B     		cmp	r3, #0
+ 661 00e6 3BD0     		beq	.L12
+  63:.\tacho.c     ****         // poll centre sensor for dead ends if next event is dead end
+  64:.\tacho.c     ****         if (flag_centre_on_line_after_turn && !line_sensor_centre) {
+ 662              		.loc 1 64 0
+ 663 00e8 494B     		ldr	r3, .L21+28
+ 664 00ea 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 665 00ec 002B     		cmp	r3, #0
+ 666 00ee 27D0     		beq	.L13
+ 667              		.loc 1 64 0 is_stmt 0 discriminator 1
+ 668 00f0 484B     		ldr	r3, .L21+32
+ 669 00f2 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 670 00f4 002B     		cmp	r3, #0
+ 671 00f6 23D1     		bne	.L13
+  65:.\tacho.c     ****             // update path index
+  66:.\tacho.c     ****     		path_index = next_event_index;
+ 672              		.loc 1 66 0 is_stmt 1
+ 673 00f8 414B     		ldr	r3, .L21+12
+ 674 00fa 1A88     		ldrh	r2, [r3]
+ 675 00fc 3E4B     		ldr	r3, .L21+4
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 14
+
+
+ 676 00fe 1A80     		strh	r2, [r3]	@ movhi
+  67:.\tacho.c     ****             flag_new_path_index = 1;
+ 677              		.loc 1 67 0
+ 678 0100 3C4B     		ldr	r3, .L21
+ 679 0102 0122     		movs	r2, #1
+ 680 0104 1A70     		strb	r2, [r3]
+  68:.\tacho.c     ****             
+  69:.\tacho.c     ****             // set robot position as light sensor events take priority over quadrature measures
+  70:.\tacho.c     ****             robot_y_pos = path[path_index][0];
+ 681              		.loc 1 70 0
+ 682 0106 3C4B     		ldr	r3, .L21+4
+ 683 0108 1B88     		ldrh	r3, [r3]
+ 684 010a 5B00     		lsls	r3, r3, #1
+ 685 010c 7A68     		ldr	r2, [r7, #4]
+ 686 010e 1344     		add	r3, r3, r2
+ 687 0110 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 688 0112 DAB2     		uxtb	r2, r3
+ 689 0114 404B     		ldr	r3, .L21+36
+ 690 0116 1A70     		strb	r2, [r3]
+  71:.\tacho.c     ****             robot_x_pos = path[path_index][1];
+ 691              		.loc 1 71 0
+ 692 0118 374B     		ldr	r3, .L21+4
+ 693 011a 1B88     		ldrh	r3, [r3]
+ 694 011c 5B00     		lsls	r3, r3, #1
+ 695 011e 7A68     		ldr	r2, [r7, #4]
+ 696 0120 1344     		add	r3, r3, r2
+ 697 0122 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 698 0124 DAB2     		uxtb	r2, r3
+ 699 0126 3D4B     		ldr	r3, .L21+40
+ 700 0128 1A70     		strb	r2, [r3]
+  72:.\tacho.c     ****             robot_position_index = path_index;
+ 701              		.loc 1 72 0
+ 702 012a 334B     		ldr	r3, .L21+4
+ 703 012c 1A88     		ldrh	r2, [r3]
+ 704 012e 364B     		ldr	r3, .L21+20
+ 705 0130 1A80     		strh	r2, [r3]	@ movhi
+  73:.\tacho.c     ****             
+  74:.\tacho.c     ****             // reset flag
+  75:.\tacho.c     ****             flag_next_event_deadend = 0;
+ 706              		.loc 1 75 0
+ 707 0132 364B     		ldr	r3, .L21+24
+ 708 0134 0022     		movs	r2, #0
+ 709 0136 1A70     		strb	r2, [r3]
+  76:.\tacho.c     ****             flag_centre_on_line_after_turn = 0;
+ 710              		.loc 1 76 0
+ 711 0138 354B     		ldr	r3, .L21+28
+ 712 013a 0022     		movs	r2, #0
+ 713 013c 1A70     		strb	r2, [r3]
+ 714 013e 0EE0     		b	.L14
+ 715              	.L13:
+  77:.\tacho.c     ****         }
+  78:.\tacho.c     ****         else if (!flag_centre_on_line_after_turn && line_sensor_centre)
+ 716              		.loc 1 78 0
+ 717 0140 334B     		ldr	r3, .L21+28
+ 718 0142 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 719 0144 002B     		cmp	r3, #0
+ 720 0146 07D1     		bne	.L15
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 15
+
+
+ 721              		.loc 1 78 0 is_stmt 0 discriminator 1
+ 722 0148 324B     		ldr	r3, .L21+32
+ 723 014a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 724 014c 002B     		cmp	r3, #0
+ 725 014e 03D0     		beq	.L15
+  79:.\tacho.c     ****             flag_centre_on_line_after_turn = 1;
+ 726              		.loc 1 79 0 is_stmt 1
+ 727 0150 2F4B     		ldr	r3, .L21+28
+ 728 0152 0122     		movs	r2, #1
+ 729 0154 1A70     		strb	r2, [r3]
+ 730 0156 02E0     		b	.L14
+ 731              	.L15:
+  80:.\tacho.c     ****         else
+  81:.\tacho.c     ****     		follow_line();
+ 732              		.loc 1 81 0
+ 733 0158 FFF7FEFF 		bl	follow_line
+ 734 015c 45E0     		b	.L7
+ 735              	.L14:
+ 736 015e 44E0     		b	.L7
+ 737              	.L12:
+  82:.\tacho.c     ****     }
+  83:.\tacho.c     ****     // poll intersection sensors for intersection events
+  84:.\tacho.c     **** 	else if (flag_next_event_intersection) {
+ 738              		.loc 1 84 0
+ 739 0160 2F4B     		ldr	r3, .L21+44
+ 740 0162 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 741 0164 002B     		cmp	r3, #0
+ 742 0166 40D0     		beq	.L7
+  85:.\tacho.c     ****         // move past intersection before updating position and path index
+  86:.\tacho.c     ****         if (flag_passing_next_int) {
+ 743              		.loc 1 86 0
+ 744 0168 2E4B     		ldr	r3, .L21+48
+ 745 016a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 746 016c 002B     		cmp	r3, #0
+ 747 016e 2ED0     		beq	.L16
+  87:.\tacho.c     ****             // once past intersection so robot centre is on intersection
+  88:.\tacho.c     ****     		if (!int_sensor_left && !int_sensor_right) {
+ 748              		.loc 1 88 0
+ 749 0170 2D4B     		ldr	r3, .L21+52
+ 750 0172 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 751 0174 002B     		cmp	r3, #0
+ 752 0176 27D1     		bne	.L17
+ 753              		.loc 1 88 0 is_stmt 0 discriminator 1
+ 754 0178 2C4B     		ldr	r3, .L21+56
+ 755 017a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 756 017c 002B     		cmp	r3, #0
+ 757 017e 23D1     		bne	.L17
+  89:.\tacho.c     ****                 // update path index
+  90:.\tacho.c     ****     			path_index = next_event_index;
+ 758              		.loc 1 90 0 is_stmt 1
+ 759 0180 1F4B     		ldr	r3, .L21+12
+ 760 0182 1A88     		ldrh	r2, [r3]
+ 761 0184 1C4B     		ldr	r3, .L21+4
+ 762 0186 1A80     		strh	r2, [r3]	@ movhi
+  91:.\tacho.c     ****     			flag_new_path_index = 1;
+ 763              		.loc 1 91 0
+ 764 0188 1A4B     		ldr	r3, .L21
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 16
+
+
+ 765 018a 0122     		movs	r2, #1
+ 766 018c 1A70     		strb	r2, [r3]
+  92:.\tacho.c     ****                 
+  93:.\tacho.c     ****                 // set robot position as light sensor events take priority over quadrature measures
+  94:.\tacho.c     ****                 robot_y_pos = path[path_index][0];
+ 767              		.loc 1 94 0
+ 768 018e 1A4B     		ldr	r3, .L21+4
+ 769 0190 1B88     		ldrh	r3, [r3]
+ 770 0192 5B00     		lsls	r3, r3, #1
+ 771 0194 7A68     		ldr	r2, [r7, #4]
+ 772 0196 1344     		add	r3, r3, r2
+ 773 0198 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 774 019a DAB2     		uxtb	r2, r3
+ 775 019c 1E4B     		ldr	r3, .L21+36
+ 776 019e 1A70     		strb	r2, [r3]
+  95:.\tacho.c     ****                 robot_x_pos = path[path_index][1];
+ 777              		.loc 1 95 0
+ 778 01a0 154B     		ldr	r3, .L21+4
+ 779 01a2 1B88     		ldrh	r3, [r3]
+ 780 01a4 5B00     		lsls	r3, r3, #1
+ 781 01a6 7A68     		ldr	r2, [r7, #4]
+ 782 01a8 1344     		add	r3, r3, r2
+ 783 01aa 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 784 01ac DAB2     		uxtb	r2, r3
+ 785 01ae 1B4B     		ldr	r3, .L21+40
+ 786 01b0 1A70     		strb	r2, [r3]
+  96:.\tacho.c     ****                 robot_position_index = path_index;
+ 787              		.loc 1 96 0
+ 788 01b2 114B     		ldr	r3, .L21+4
+ 789 01b4 1A88     		ldrh	r2, [r3]
+ 790 01b6 144B     		ldr	r3, .L21+20
+ 791 01b8 1A80     		strh	r2, [r3]	@ movhi
+  97:.\tacho.c     ****                 
+  98:.\tacho.c     ****                 // reset flags
+  99:.\tacho.c     ****                 flag_passing_next_int = 0;
+ 792              		.loc 1 99 0
+ 793 01ba 1A4B     		ldr	r3, .L21+48
+ 794 01bc 0022     		movs	r2, #0
+ 795 01be 1A70     		strb	r2, [r3]
+ 100:.\tacho.c     ****                 flag_next_event_intersection = 0;
+ 796              		.loc 1 100 0
+ 797 01c0 174B     		ldr	r3, .L21+44
+ 798 01c2 0022     		movs	r2, #0
+ 799 01c4 1A70     		strb	r2, [r3]
+ 800 01c6 10E0     		b	.L7
+ 801              	.L17:
+ 101:.\tacho.c     ****     		}
+ 102:.\tacho.c     ****     		else
+ 103:.\tacho.c     ****     			follow_line();
+ 802              		.loc 1 103 0
+ 803 01c8 FFF7FEFF 		bl	follow_line
+ 804 01cc 0DE0     		b	.L7
+ 805              	.L16:
+ 104:.\tacho.c     ****         }
+ 105:.\tacho.c     ****         else if (int_sensor_left || int_sensor_right)
+ 806              		.loc 1 105 0
+ 807 01ce 164B     		ldr	r3, .L21+52
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 17
+
+
+ 808 01d0 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 809 01d2 002B     		cmp	r3, #0
+ 810 01d4 03D1     		bne	.L19
+ 811              		.loc 1 105 0 is_stmt 0 discriminator 1
+ 812 01d6 154B     		ldr	r3, .L21+56
+ 813 01d8 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 814 01da 002B     		cmp	r3, #0
+ 815 01dc 03D0     		beq	.L20
+ 816              	.L19:
+ 106:.\tacho.c     **** 		    flag_passing_next_int = 1;
+ 817              		.loc 1 106 0 is_stmt 1
+ 818 01de 114B     		ldr	r3, .L21+48
+ 819 01e0 0122     		movs	r2, #1
+ 820 01e2 1A70     		strb	r2, [r3]
+ 821 01e4 01E0     		b	.L7
+ 822              	.L20:
+ 107:.\tacho.c     ****         else
+ 108:.\tacho.c     ****     		follow_line();
+ 823              		.loc 1 108 0
+ 824 01e6 FFF7FEFF 		bl	follow_line
+ 825              	.L7:
+ 109:.\tacho.c     ****     }
+ 110:.\tacho.c     **** 	return 1;
+ 826              		.loc 1 110 0
+ 827 01ea 0123     		movs	r3, #1
+ 828              	.L4:
+ 111:.\tacho.c     **** }
+ 829              		.loc 1 111 0
+ 830 01ec 1846     		mov	r0, r3
+ 831 01ee 0837     		adds	r7, r7, #8
+ 832              		.cfi_def_cfa_offset 8
+ 833 01f0 BD46     		mov	sp, r7
+ 834              		.cfi_def_cfa_register 13
+ 835              		@ sp needed
+ 836 01f2 80BD     		pop	{r7, pc}
+ 837              	.L22:
+ 838              		.align	2
+ 839              	.L21:
+ 840 01f4 00000000 		.word	flag_new_path_index
+ 841 01f8 00000000 		.word	path_index
+ 842 01fc 00000000 		.word	path_orientation
+ 843 0200 00000000 		.word	next_event_index
+ 844 0204 00000000 		.word	flag_next_event_u_turn
+ 845 0208 00000000 		.word	robot_position_index
+ 846 020c 00000000 		.word	flag_next_event_deadend
+ 847 0210 00000000 		.word	flag_centre_on_line_after_turn
+ 848 0214 00000000 		.word	line_sensor_centre
+ 849 0218 00000000 		.word	robot_y_pos
+ 850 021c 00000000 		.word	robot_x_pos
+ 851 0220 00000000 		.word	flag_next_event_intersection
+ 852 0224 00000000 		.word	flag_passing_next_int
+ 853 0228 00000000 		.word	int_sensor_left
+ 854 022c 00000000 		.word	int_sensor_right
+ 855              		.cfi_endproc
+ 856              	.LFE63:
+ 857              		.size	follow_path, .-follow_path
+ 858              		.section	.text.follow_line,"ax",%progbits
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 18
+
+
+ 859              		.align	2
+ 860              		.global	follow_line
+ 861              		.thumb
+ 862              		.thumb_func
+ 863              		.type	follow_line, %function
+ 864              	follow_line:
+ 865              	.LFB64:
+ 112:.\tacho.c     **** //* ========================================
+ 113:.\tacho.c     **** void follow_line()
+ 114:.\tacho.c     **** {
+ 866              		.loc 1 114 0
+ 867              		.cfi_startproc
+ 868              		@ args = 0, pretend = 0, frame = 0
+ 869              		@ frame_needed = 1, uses_anonymous_args = 0
+ 870 0000 80B5     		push	{r7, lr}
+ 871              		.cfi_def_cfa_offset 8
+ 872              		.cfi_offset 7, -8
+ 873              		.cfi_offset 14, -4
+ 874 0002 00AF     		add	r7, sp, #0
+ 875              		.cfi_def_cfa_register 7
+ 115:.\tacho.c     ****     // both line sensors off line and veering -> move straight
+ 116:.\tacho.c     ****     if (!line_sensor_left && !line_sensor_right && flag_veering) {
+ 876              		.loc 1 116 0
+ 877 0004 4E4B     		ldr	r3, .L33
+ 878 0006 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 879 0008 002B     		cmp	r3, #0
+ 880 000a 10D1     		bne	.L24
+ 881              		.loc 1 116 0 is_stmt 0 discriminator 1
+ 882 000c 4D4B     		ldr	r3, .L33+4
+ 883 000e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 884 0010 002B     		cmp	r3, #0
+ 885 0012 0CD1     		bne	.L24
+ 886              		.loc 1 116 0 discriminator 2
+ 887 0014 4C4B     		ldr	r3, .L33+8
+ 888 0016 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 889 0018 002B     		cmp	r3, #0
+ 890 001a 08D0     		beq	.L24
+ 117:.\tacho.c     ****         PWM_2_WriteCompare(pwm_cmp_right);
+ 891              		.loc 1 117 0 is_stmt 1
+ 892 001c 4B4B     		ldr	r3, .L33+12
+ 893 001e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 894 0020 1846     		mov	r0, r3
+ 895 0022 FFF7FEFF 		bl	PWM_2_WriteCompare
+ 118:.\tacho.c     ****         flag_veering = 0;
+ 896              		.loc 1 118 0
+ 897 0026 484B     		ldr	r3, .L33+8
+ 898 0028 0022     		movs	r2, #0
+ 899 002a 1A70     		strb	r2, [r3]
+ 900 002c 86E0     		b	.L23
+ 901              	.L24:
+ 119:.\tacho.c     ****     }
+ 120:.\tacho.c     ****     // left line and int on line -> ignore intersection
+ 121:.\tacho.c     ****     else if (line_sensor_left && int_sensor_left) {
+ 902              		.loc 1 121 0
+ 903 002e 444B     		ldr	r3, .L33
+ 904 0030 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 905 0032 002B     		cmp	r3, #0
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 19
+
+
+ 906 0034 28D0     		beq	.L26
+ 907              		.loc 1 121 0 is_stmt 0 discriminator 1
+ 908 0036 464B     		ldr	r3, .L33+16
+ 909 0038 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 910 003a 002B     		cmp	r3, #0
+ 911 003c 24D0     		beq	.L26
+ 122:.\tacho.c     ****         // use line right to keep straight
+ 123:.\tacho.c     ****         if (line_sensor_right && !flag_veering) {
+ 912              		.loc 1 123 0 is_stmt 1
+ 913 003e 414B     		ldr	r3, .L33+4
+ 914 0040 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 915 0042 002B     		cmp	r3, #0
+ 916 0044 0ED0     		beq	.L27
+ 917              		.loc 1 123 0 is_stmt 0 discriminator 1
+ 918 0046 404B     		ldr	r3, .L33+8
+ 919 0048 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 920 004a 002B     		cmp	r3, #0
+ 921 004c 0AD1     		bne	.L27
+ 124:.\tacho.c     ****             PWM_2_WriteCompare(pwm_cmp_right - PWM_VEER_ADJUST);
+ 922              		.loc 1 124 0 is_stmt 1
+ 923 004e 3F4B     		ldr	r3, .L33+12
+ 924 0050 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 925 0052 0F3B     		subs	r3, r3, #15
+ 926 0054 DBB2     		uxtb	r3, r3
+ 927 0056 1846     		mov	r0, r3
+ 928 0058 FFF7FEFF 		bl	PWM_2_WriteCompare
+ 125:.\tacho.c     ****             flag_veering = 1;
+ 929              		.loc 1 125 0
+ 930 005c 3A4B     		ldr	r3, .L33+8
+ 931 005e 0122     		movs	r2, #1
+ 932 0060 1A70     		strb	r2, [r3]
+ 933 0062 10E0     		b	.L28
+ 934              	.L27:
+ 126:.\tacho.c     ****         }
+ 127:.\tacho.c     ****         else if (!line_sensor_right && flag_veering) {
+ 935              		.loc 1 127 0
+ 936 0064 374B     		ldr	r3, .L33+4
+ 937 0066 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 938 0068 002B     		cmp	r3, #0
+ 939 006a 0CD1     		bne	.L28
+ 940              		.loc 1 127 0 is_stmt 0 discriminator 1
+ 941 006c 364B     		ldr	r3, .L33+8
+ 942 006e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 943 0070 002B     		cmp	r3, #0
+ 944 0072 08D0     		beq	.L28
+ 128:.\tacho.c     ****             PWM_2_WriteCompare(pwm_cmp_right);
+ 945              		.loc 1 128 0 is_stmt 1
+ 946 0074 354B     		ldr	r3, .L33+12
+ 947 0076 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 948 0078 1846     		mov	r0, r3
+ 949 007a FFF7FEFF 		bl	PWM_2_WriteCompare
+ 129:.\tacho.c     ****             flag_veering = 0;
+ 950              		.loc 1 129 0
+ 951 007e 324B     		ldr	r3, .L33+8
+ 952 0080 0022     		movs	r2, #0
+ 953 0082 1A70     		strb	r2, [r3]
+ 123:.\tacho.c     ****             PWM_2_WriteCompare(pwm_cmp_right - PWM_VEER_ADJUST);
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 20
+
+
+ 954              		.loc 1 123 0
+ 955 0084 5AE0     		b	.L23
+ 956              	.L28:
+ 957 0086 59E0     		b	.L23
+ 958              	.L26:
+ 130:.\tacho.c     ****         }
+ 131:.\tacho.c     ****     }
+ 132:.\tacho.c     ****     // right line and int on line -> ignore intersection
+ 133:.\tacho.c     ****     else if (line_sensor_right && int_sensor_right) {
+ 959              		.loc 1 133 0
+ 960 0088 2E4B     		ldr	r3, .L33+4
+ 961 008a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 962 008c 002B     		cmp	r3, #0
+ 963 008e 28D0     		beq	.L29
+ 964              		.loc 1 133 0 is_stmt 0 discriminator 1
+ 965 0090 304B     		ldr	r3, .L33+20
+ 966 0092 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 967 0094 002B     		cmp	r3, #0
+ 968 0096 24D0     		beq	.L29
+ 134:.\tacho.c     ****         // use line left to keep straight
+ 135:.\tacho.c     ****         if (line_sensor_left && !flag_veering) {
+ 969              		.loc 1 135 0 is_stmt 1
+ 970 0098 294B     		ldr	r3, .L33
+ 971 009a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 972 009c 002B     		cmp	r3, #0
+ 973 009e 0ED0     		beq	.L30
+ 974              		.loc 1 135 0 is_stmt 0 discriminator 1
+ 975 00a0 294B     		ldr	r3, .L33+8
+ 976 00a2 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 977 00a4 002B     		cmp	r3, #0
+ 978 00a6 0AD1     		bne	.L30
+ 136:.\tacho.c     ****             PWM_2_WriteCompare(pwm_cmp_right + PWM_VEER_ADJUST);
+ 979              		.loc 1 136 0 is_stmt 1
+ 980 00a8 284B     		ldr	r3, .L33+12
+ 981 00aa 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 982 00ac 0F33     		adds	r3, r3, #15
+ 983 00ae DBB2     		uxtb	r3, r3
+ 984 00b0 1846     		mov	r0, r3
+ 985 00b2 FFF7FEFF 		bl	PWM_2_WriteCompare
+ 137:.\tacho.c     ****             flag_veering = 1;
+ 986              		.loc 1 137 0
+ 987 00b6 244B     		ldr	r3, .L33+8
+ 988 00b8 0122     		movs	r2, #1
+ 989 00ba 1A70     		strb	r2, [r3]
+ 990 00bc 10E0     		b	.L31
+ 991              	.L30:
+ 138:.\tacho.c     ****         }
+ 139:.\tacho.c     ****         else if (!line_sensor_left && flag_veering) {
+ 992              		.loc 1 139 0
+ 993 00be 204B     		ldr	r3, .L33
+ 994 00c0 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 995 00c2 002B     		cmp	r3, #0
+ 996 00c4 0CD1     		bne	.L31
+ 997              		.loc 1 139 0 is_stmt 0 discriminator 1
+ 998 00c6 204B     		ldr	r3, .L33+8
+ 999 00c8 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1000 00ca 002B     		cmp	r3, #0
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 21
+
+
+ 1001 00cc 08D0     		beq	.L31
+ 140:.\tacho.c     ****             PWM_2_WriteCompare(pwm_cmp_right);
+ 1002              		.loc 1 140 0 is_stmt 1
+ 1003 00ce 1F4B     		ldr	r3, .L33+12
+ 1004 00d0 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1005 00d2 1846     		mov	r0, r3
+ 1006 00d4 FFF7FEFF 		bl	PWM_2_WriteCompare
+ 141:.\tacho.c     ****             flag_veering = 0;
+ 1007              		.loc 1 141 0
+ 1008 00d8 1B4B     		ldr	r3, .L33+8
+ 1009 00da 0022     		movs	r2, #0
+ 1010 00dc 1A70     		strb	r2, [r3]
+ 135:.\tacho.c     ****             PWM_2_WriteCompare(pwm_cmp_right + PWM_VEER_ADJUST);
+ 1011              		.loc 1 135 0
+ 1012 00de 2DE0     		b	.L23
+ 1013              	.L31:
+ 1014 00e0 2CE0     		b	.L23
+ 1015              	.L29:
+ 142:.\tacho.c     ****         }
+ 143:.\tacho.c     ****     }
+ 144:.\tacho.c     ****     // follow line -> no intersection
+ 145:.\tacho.c     ****     else if (line_sensor_left && !int_sensor_left && !flag_veering) {
+ 1016              		.loc 1 145 0
+ 1017 00e2 174B     		ldr	r3, .L33
+ 1018 00e4 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1019 00e6 002B     		cmp	r3, #0
+ 1020 00e8 12D0     		beq	.L32
+ 1021              		.loc 1 145 0 is_stmt 0 discriminator 1
+ 1022 00ea 194B     		ldr	r3, .L33+16
+ 1023 00ec 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1024 00ee 002B     		cmp	r3, #0
+ 1025 00f0 0ED1     		bne	.L32
+ 1026              		.loc 1 145 0 discriminator 2
+ 1027 00f2 154B     		ldr	r3, .L33+8
+ 1028 00f4 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1029 00f6 002B     		cmp	r3, #0
+ 1030 00f8 0AD1     		bne	.L32
+ 146:.\tacho.c     ****         PWM_2_WriteCompare(pwm_cmp_right + PWM_VEER_ADJUST);
+ 1031              		.loc 1 146 0 is_stmt 1
+ 1032 00fa 144B     		ldr	r3, .L33+12
+ 1033 00fc 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1034 00fe 0F33     		adds	r3, r3, #15
+ 1035 0100 DBB2     		uxtb	r3, r3
+ 1036 0102 1846     		mov	r0, r3
+ 1037 0104 FFF7FEFF 		bl	PWM_2_WriteCompare
+ 147:.\tacho.c     ****         flag_veering = 1;
+ 1038              		.loc 1 147 0
+ 1039 0108 0F4B     		ldr	r3, .L33+8
+ 1040 010a 0122     		movs	r2, #1
+ 1041 010c 1A70     		strb	r2, [r3]
+ 1042 010e 15E0     		b	.L23
+ 1043              	.L32:
+ 148:.\tacho.c     ****     }
+ 149:.\tacho.c     ****     else if (line_sensor_right && !int_sensor_right && robot_direction != TURNING_RIGHT) {
+ 1044              		.loc 1 149 0
+ 1045 0110 0C4B     		ldr	r3, .L33+4
+ 1046 0112 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 22
+
+
+ 1047 0114 002B     		cmp	r3, #0
+ 1048 0116 11D0     		beq	.L23
+ 1049              		.loc 1 149 0 is_stmt 0 discriminator 1
+ 1050 0118 0E4B     		ldr	r3, .L33+20
+ 1051 011a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1052 011c 002B     		cmp	r3, #0
+ 1053 011e 0DD1     		bne	.L23
+ 1054              		.loc 1 149 0 discriminator 2
+ 1055 0120 0D4B     		ldr	r3, .L33+24
+ 1056 0122 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1057 0124 012B     		cmp	r3, #1
+ 1058 0126 09D0     		beq	.L23
+ 150:.\tacho.c     ****         PWM_2_WriteCompare(pwm_cmp_right - PWM_VEER_ADJUST);
+ 1059              		.loc 1 150 0 is_stmt 1
+ 1060 0128 084B     		ldr	r3, .L33+12
+ 1061 012a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1062 012c 0F3B     		subs	r3, r3, #15
+ 1063 012e DBB2     		uxtb	r3, r3
+ 1064 0130 1846     		mov	r0, r3
+ 1065 0132 FFF7FEFF 		bl	PWM_2_WriteCompare
+ 151:.\tacho.c     ****         flag_veering = 1;
+ 1066              		.loc 1 151 0
+ 1067 0136 044B     		ldr	r3, .L33+8
+ 1068 0138 0122     		movs	r2, #1
+ 1069 013a 1A70     		strb	r2, [r3]
+ 1070              	.L23:
+ 152:.\tacho.c     ****     }
+ 153:.\tacho.c     **** }
+ 1071              		.loc 1 153 0
+ 1072 013c 80BD     		pop	{r7, pc}
+ 1073              	.L34:
+ 1074 013e 00BF     		.align	2
+ 1075              	.L33:
+ 1076 0140 00000000 		.word	line_sensor_left
+ 1077 0144 00000000 		.word	line_sensor_right
+ 1078 0148 00000000 		.word	flag_veering
+ 1079 014c 00000000 		.word	pwm_cmp_right
+ 1080 0150 00000000 		.word	int_sensor_left
+ 1081 0154 00000000 		.word	int_sensor_right
+ 1082 0158 00000000 		.word	robot_direction
+ 1083              		.cfi_endproc
+ 1084              	.LFE64:
+ 1085              		.size	follow_line, .-follow_line
+ 1086              		.section	.text.turn_robot,"ax",%progbits
+ 1087              		.align	2
+ 1088              		.global	turn_robot
+ 1089              		.thumb
+ 1090              		.thumb_func
+ 1091              		.type	turn_robot, %function
+ 1092              	turn_robot:
+ 1093              	.LFB65:
+ 154:.\tacho.c     **** //* ========================================
+ 155:.\tacho.c     **** void turn_robot(int8 path[][2])
+ 156:.\tacho.c     **** {
+ 1094              		.loc 1 156 0
+ 1095              		.cfi_startproc
+ 1096              		@ args = 0, pretend = 0, frame = 16
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 23
+
+
+ 1097              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1098 0000 80B5     		push	{r7, lr}
+ 1099              		.cfi_def_cfa_offset 8
+ 1100              		.cfi_offset 7, -8
+ 1101              		.cfi_offset 14, -4
+ 1102 0002 84B0     		sub	sp, sp, #16
+ 1103              		.cfi_def_cfa_offset 24
+ 1104 0004 00AF     		add	r7, sp, #0
+ 1105              		.cfi_def_cfa_register 7
+ 1106 0006 7860     		str	r0, [r7, #4]
+ 157:.\tacho.c     ****     CyDelay(80);
+ 1107              		.loc 1 157 0
+ 1108 0008 5020     		movs	r0, #80
+ 1109 000a FFF7FEFF 		bl	CyDelay
+ 158:.\tacho.c     ****     COAST_OFF
+ 1110              		.loc 1 158 0
+ 1111 000e 0020     		movs	r0, #0
+ 1112 0010 FFF7FEFF 		bl	H_BRIDGE_CONTROL_Write
+ 159:.\tacho.c     ****     CyDelay(200);
+ 1113              		.loc 1 159 0
+ 1114 0014 C820     		movs	r0, #200
+ 1115 0016 FFF7FEFF 		bl	CyDelay
+ 160:.\tacho.c     ****     
+ 161:.\tacho.c     ****     PWM_2_WriteCompare(pwm_cmp_right);
+ 1116              		.loc 1 161 0
+ 1117 001a 774B     		ldr	r3, .L51
+ 1118 001c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1119 001e 1846     		mov	r0, r3
+ 1120 0020 FFF7FEFF 		bl	PWM_2_WriteCompare
+ 162:.\tacho.c     ****     flag_veering = 0;
+ 1121              		.loc 1 162 0
+ 1122 0024 754B     		ldr	r3, .L51+4
+ 1123 0026 0022     		movs	r2, #0
+ 1124 0028 1A70     		strb	r2, [r3]
+ 163:.\tacho.c     ****     
+ 164:.\tacho.c     ****     uint8 new_orient;
+ 165:.\tacho.c     ****     // check if robot needs to turn left
+ 166:.\tacho.c     ****     (robot_orientation == UP) ? (new_orient = LEFT) : (new_orient = robot_orientation - 1);
+ 1125              		.loc 1 166 0
+ 1126 002a 754B     		ldr	r3, .L51+8
+ 1127 002c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1128 002e 002B     		cmp	r3, #0
+ 1129 0030 02D1     		bne	.L36
+ 1130              		.loc 1 166 0 is_stmt 0 discriminator 1
+ 1131 0032 0323     		movs	r3, #3
+ 1132 0034 FB73     		strb	r3, [r7, #15]
+ 1133 0036 03E0     		b	.L37
+ 1134              	.L36:
+ 1135              		.loc 1 166 0 discriminator 2
+ 1136 0038 714B     		ldr	r3, .L51+8
+ 1137 003a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1138 003c 013B     		subs	r3, r3, #1
+ 1139 003e FB73     		strb	r3, [r7, #15]
+ 1140              	.L37:
+ 167:.\tacho.c     ****     if (PATH_CHANGED_TO(new_orient)) {
+ 1141              		.loc 1 167 0 is_stmt 1
+ 1142 0040 704B     		ldr	r3, .L51+12
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 24
+
+
+ 1143 0042 1B88     		ldrh	r3, [r3]
+ 1144 0044 5B00     		lsls	r3, r3, #1
+ 1145 0046 7A68     		ldr	r2, [r7, #4]
+ 1146 0048 1344     		add	r3, r3, r2
+ 1147 004a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1148 004c 5AB2     		sxtb	r2, r3
+ 1149 004e FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 1150 0050 6D49     		ldr	r1, .L51+16
+ 1151 0052 11F81330 		ldrb	r3, [r1, r3, lsl #1]	@ zero_extendqisi2
+ 1152 0056 5BB2     		sxtb	r3, r3
+ 1153 0058 1A44     		add	r2, r2, r3
+ 1154 005a 6A4B     		ldr	r3, .L51+12
+ 1155 005c 1B88     		ldrh	r3, [r3]
+ 1156 005e 0133     		adds	r3, r3, #1
+ 1157 0060 5B00     		lsls	r3, r3, #1
+ 1158 0062 7968     		ldr	r1, [r7, #4]
+ 1159 0064 0B44     		add	r3, r3, r1
+ 1160 0066 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1161 0068 5BB2     		sxtb	r3, r3
+ 1162 006a 9A42     		cmp	r2, r3
+ 1163 006c 27D1     		bne	.L38
+ 1164              		.loc 1 167 0 is_stmt 0 discriminator 1
+ 1165 006e 654B     		ldr	r3, .L51+12
+ 1166 0070 1B88     		ldrh	r3, [r3]
+ 1167 0072 5B00     		lsls	r3, r3, #1
+ 1168 0074 7A68     		ldr	r2, [r7, #4]
+ 1169 0076 1344     		add	r3, r3, r2
+ 1170 0078 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 1171 007a 5AB2     		sxtb	r2, r3
+ 1172 007c FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 1173 007e 6249     		ldr	r1, .L51+16
+ 1174 0080 5B00     		lsls	r3, r3, #1
+ 1175 0082 0B44     		add	r3, r3, r1
+ 1176 0084 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 1177 0086 5BB2     		sxtb	r3, r3
+ 1178 0088 1A44     		add	r2, r2, r3
+ 1179 008a 5E4B     		ldr	r3, .L51+12
+ 1180 008c 1B88     		ldrh	r3, [r3]
+ 1181 008e 0133     		adds	r3, r3, #1
+ 1182 0090 5B00     		lsls	r3, r3, #1
+ 1183 0092 7968     		ldr	r1, [r7, #4]
+ 1184 0094 0B44     		add	r3, r3, r1
+ 1185 0096 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 1186 0098 5BB2     		sxtb	r3, r3
+ 1187 009a 9A42     		cmp	r2, r3
+ 1188 009c 0FD1     		bne	.L38
+ 168:.\tacho.c     ****         robot_orientation = new_orient;
+ 1189              		.loc 1 168 0 is_stmt 1
+ 1190 009e 584A     		ldr	r2, .L51+8
+ 1191 00a0 FB7B     		ldrb	r3, [r7, #15]
+ 1192 00a2 1370     		strb	r3, [r2]
+ 169:.\tacho.c     ****         path_orientation = &orientation[robot_orientation][0];
+ 1193              		.loc 1 169 0
+ 1194 00a4 564B     		ldr	r3, .L51+8
+ 1195 00a6 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1196 00a8 5B00     		lsls	r3, r3, #1
+ 1197 00aa 574A     		ldr	r2, .L51+16
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 25
+
+
+ 1198 00ac 1344     		add	r3, r3, r2
+ 1199 00ae 574A     		ldr	r2, .L51+20
+ 1200 00b0 1360     		str	r3, [r2]
+ 170:.\tacho.c     ****         TURN_LEFT
+ 1201              		.loc 1 170 0
+ 1202 00b2 0120     		movs	r0, #1
+ 1203 00b4 FFF7FEFF 		bl	PWM_CONTROL_Write
+ 171:.\tacho.c     ****         robot_direction = TURNING_LEFT;
+ 1204              		.loc 1 171 0
+ 1205 00b8 554B     		ldr	r3, .L51+24
+ 1206 00ba 0322     		movs	r2, #3
+ 1207 00bc 1A70     		strb	r2, [r3]
+ 1208              	.L38:
+ 172:.\tacho.c     ****     }
+ 173:.\tacho.c     ****     
+ 174:.\tacho.c     ****     // check if robot needs to turn right or around
+ 175:.\tacho.c     ****     if (robot_direction != TURNING_LEFT) {
+ 1209              		.loc 1 175 0
+ 1210 00be 544B     		ldr	r3, .L51+24
+ 1211 00c0 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1212 00c2 032B     		cmp	r3, #3
+ 1213 00c4 59D0     		beq	.L39
+ 176:.\tacho.c     ****         // if robot does not need to turn right it needs to turn around
+ 177:.\tacho.c     ****         (robot_orientation == LEFT) ? (new_orient = UP) : (new_orient = robot_orientation + 1);
+ 1214              		.loc 1 177 0
+ 1215 00c6 4E4B     		ldr	r3, .L51+8
+ 1216 00c8 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1217 00ca 032B     		cmp	r3, #3
+ 1218 00cc 02D1     		bne	.L40
+ 1219              		.loc 1 177 0 is_stmt 0 discriminator 1
+ 1220 00ce 0023     		movs	r3, #0
+ 1221 00d0 FB73     		strb	r3, [r7, #15]
+ 1222 00d2 03E0     		b	.L41
+ 1223              	.L40:
+ 1224              		.loc 1 177 0 discriminator 2
+ 1225 00d4 4A4B     		ldr	r3, .L51+8
+ 1226 00d6 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1227 00d8 0133     		adds	r3, r3, #1
+ 1228 00da FB73     		strb	r3, [r7, #15]
+ 1229              	.L41:
+ 178:.\tacho.c     ****         if (!PATH_CHANGED_TO(new_orient)) {
+ 1230              		.loc 1 178 0 is_stmt 1
+ 1231 00dc 494B     		ldr	r3, .L51+12
+ 1232 00de 1B88     		ldrh	r3, [r3]
+ 1233 00e0 5B00     		lsls	r3, r3, #1
+ 1234 00e2 7A68     		ldr	r2, [r7, #4]
+ 1235 00e4 1344     		add	r3, r3, r2
+ 1236 00e6 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1237 00e8 5AB2     		sxtb	r2, r3
+ 1238 00ea FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 1239 00ec 4649     		ldr	r1, .L51+16
+ 1240 00ee 11F81330 		ldrb	r3, [r1, r3, lsl #1]	@ zero_extendqisi2
+ 1241 00f2 5BB2     		sxtb	r3, r3
+ 1242 00f4 1A44     		add	r2, r2, r3
+ 1243 00f6 434B     		ldr	r3, .L51+12
+ 1244 00f8 1B88     		ldrh	r3, [r3]
+ 1245 00fa 0133     		adds	r3, r3, #1
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 26
+
+
+ 1246 00fc 5B00     		lsls	r3, r3, #1
+ 1247 00fe 7968     		ldr	r1, [r7, #4]
+ 1248 0100 0B44     		add	r3, r3, r1
+ 1249 0102 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1250 0104 5BB2     		sxtb	r3, r3
+ 1251 0106 9A42     		cmp	r2, r3
+ 1252 0108 17D1     		bne	.L42
+ 1253              		.loc 1 178 0 is_stmt 0 discriminator 1
+ 1254 010a 3E4B     		ldr	r3, .L51+12
+ 1255 010c 1B88     		ldrh	r3, [r3]
+ 1256 010e 5B00     		lsls	r3, r3, #1
+ 1257 0110 7A68     		ldr	r2, [r7, #4]
+ 1258 0112 1344     		add	r3, r3, r2
+ 1259 0114 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 1260 0116 5AB2     		sxtb	r2, r3
+ 1261 0118 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 1262 011a 3B49     		ldr	r1, .L51+16
+ 1263 011c 5B00     		lsls	r3, r3, #1
+ 1264 011e 0B44     		add	r3, r3, r1
+ 1265 0120 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 1266 0122 5BB2     		sxtb	r3, r3
+ 1267 0124 1A44     		add	r2, r2, r3
+ 1268 0126 374B     		ldr	r3, .L51+12
+ 1269 0128 1B88     		ldrh	r3, [r3]
+ 1270 012a 0133     		adds	r3, r3, #1
+ 1271 012c 5B00     		lsls	r3, r3, #1
+ 1272 012e 7968     		ldr	r1, [r7, #4]
+ 1273 0130 0B44     		add	r3, r3, r1
+ 1274 0132 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 1275 0134 5BB2     		sxtb	r3, r3
+ 1276 0136 9A42     		cmp	r2, r3
+ 1277 0138 0FD0     		beq	.L43
+ 1278              	.L42:
+ 179:.\tacho.c     ****             flag_turn_around = 1;
+ 1279              		.loc 1 179 0 is_stmt 1
+ 1280 013a 364B     		ldr	r3, .L51+28
+ 1281 013c 0122     		movs	r2, #1
+ 1282 013e 1A70     		strb	r2, [r3]
+ 180:.\tacho.c     ****             (new_orient == LEFT) ? (robot_orientation = UP) : (robot_orientation = new_orient + 1);
+ 1283              		.loc 1 180 0
+ 1284 0140 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 1285 0142 032B     		cmp	r3, #3
+ 1286 0144 03D1     		bne	.L44
+ 1287              		.loc 1 180 0 is_stmt 0 discriminator 1
+ 1288 0146 2E4B     		ldr	r3, .L51+8
+ 1289 0148 0022     		movs	r2, #0
+ 1290 014a 1A70     		strb	r2, [r3]
+ 1291 014c 08E0     		b	.L46
+ 1292              	.L44:
+ 1293              		.loc 1 180 0 discriminator 2
+ 1294 014e FB7B     		ldrb	r3, [r7, #15]
+ 1295 0150 0133     		adds	r3, r3, #1
+ 1296 0152 DAB2     		uxtb	r2, r3
+ 1297 0154 2A4B     		ldr	r3, .L51+8
+ 1298 0156 1A70     		strb	r2, [r3]
+ 1299 0158 02E0     		b	.L46
+ 1300              	.L43:
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 27
+
+
+ 181:.\tacho.c     ****         }
+ 182:.\tacho.c     ****         else
+ 183:.\tacho.c     ****             robot_orientation = new_orient;
+ 1301              		.loc 1 183 0 is_stmt 1
+ 1302 015a 294A     		ldr	r2, .L51+8
+ 1303 015c FB7B     		ldrb	r3, [r7, #15]
+ 1304 015e 1370     		strb	r3, [r2]
+ 1305              	.L46:
+ 184:.\tacho.c     ****         path_orientation = &orientation[robot_orientation][0];
+ 1306              		.loc 1 184 0
+ 1307 0160 274B     		ldr	r3, .L51+8
+ 1308 0162 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1309 0164 5B00     		lsls	r3, r3, #1
+ 1310 0166 284A     		ldr	r2, .L51+16
+ 1311 0168 1344     		add	r3, r3, r2
+ 1312 016a 284A     		ldr	r2, .L51+20
+ 1313 016c 1360     		str	r3, [r2]
+ 185:.\tacho.c     ****         TURN_RIGHT
+ 1314              		.loc 1 185 0
+ 1315 016e 0220     		movs	r0, #2
+ 1316 0170 FFF7FEFF 		bl	PWM_CONTROL_Write
+ 186:.\tacho.c     ****         robot_direction = TURNING_RIGHT;
+ 1317              		.loc 1 186 0
+ 1318 0174 264B     		ldr	r3, .L51+24
+ 1319 0176 0122     		movs	r2, #1
+ 1320 0178 1A70     		strb	r2, [r3]
+ 1321              	.L39:
+ 187:.\tacho.c     ****     }
+ 188:.\tacho.c     ****     
+ 189:.\tacho.c     ****     QuadDec_M1_SetCounter(0);
+ 1322              		.loc 1 189 0
+ 1323 017a 0020     		movs	r0, #0
+ 1324 017c FFF7FEFF 		bl	QuadDec_M1_SetCounter
+ 190:.\tacho.c     ****     QuadDec_M2_SetCounter(0);
+ 1325              		.loc 1 190 0
+ 1326 0180 0020     		movs	r0, #0
+ 1327 0182 FFF7FEFF 		bl	QuadDec_M2_SetCounter
+ 191:.\tacho.c     ****     COAST_ON
+ 1328              		.loc 1 191 0
+ 1329 0186 0120     		movs	r0, #1
+ 1330 0188 FFF7FEFF 		bl	H_BRIDGE_CONTROL_Write
+ 192:.\tacho.c     ****     
+ 193:.\tacho.c     ****     uint8 turn_quad;
+ 194:.\tacho.c     ****     (flag_turn_around) ? (turn_quad = 195) : (turn_quad = 93);
+ 1331              		.loc 1 194 0
+ 1332 018c 214B     		ldr	r3, .L51+28
+ 1333 018e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1334 0190 002B     		cmp	r3, #0
+ 1335 0192 02D0     		beq	.L47
+ 1336              		.loc 1 194 0 is_stmt 0 discriminator 1
+ 1337 0194 C323     		movs	r3, #195
+ 1338 0196 BB73     		strb	r3, [r7, #14]
+ 1339 0198 01E0     		b	.L48
+ 1340              	.L47:
+ 1341              		.loc 1 194 0 discriminator 2
+ 1342 019a 5D23     		movs	r3, #93
+ 1343 019c BB73     		strb	r3, [r7, #14]
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 28
+
+
+ 1344              	.L48:
+ 195:.\tacho.c     ****     do {
+ 196:.\tacho.c     ****         get_wheel_quadrature();
+ 1345              		.loc 1 196 0 is_stmt 1
+ 1346 019e FFF7FEFF 		bl	get_wheel_quadrature
+ 197:.\tacho.c     ****         if (quad_cnt_left > 120 && line_sensor_left) {
+ 1347              		.loc 1 197 0
+ 1348 01a2 1D4B     		ldr	r3, .L51+32
+ 1349 01a4 1B88     		ldrh	r3, [r3]
+ 1350 01a6 1BB2     		sxth	r3, r3
+ 1351 01a8 782B     		cmp	r3, #120
+ 1352 01aa 04DD     		ble	.L49
+ 1353              		.loc 1 197 0 is_stmt 0 discriminator 1
+ 1354 01ac 1B4B     		ldr	r3, .L51+36
+ 1355 01ae 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1356 01b0 002B     		cmp	r3, #0
+ 1357 01b2 00D0     		beq	.L49
+ 198:.\tacho.c     ****             break;
+ 1358              		.loc 1 198 0 is_stmt 1
+ 1359 01b4 05E0     		b	.L50
+ 1360              	.L49:
+ 199:.\tacho.c     ****         }
+ 200:.\tacho.c     ****     } while (quad_cnt_left < turn_quad);
+ 1361              		.loc 1 200 0
+ 1362 01b6 184B     		ldr	r3, .L51+32
+ 1363 01b8 1B88     		ldrh	r3, [r3]
+ 1364 01ba 1AB2     		sxth	r2, r3
+ 1365 01bc BB7B     		ldrb	r3, [r7, #14]	@ zero_extendqisi2
+ 1366 01be 9A42     		cmp	r2, r3
+ 1367 01c0 EDDB     		blt	.L48
+ 1368              	.L50:
+ 201:.\tacho.c     ****     
+ 202:.\tacho.c     ****     COAST_OFF
+ 1369              		.loc 1 202 0
+ 1370 01c2 0020     		movs	r0, #0
+ 1371 01c4 FFF7FEFF 		bl	H_BRIDGE_CONTROL_Write
+ 203:.\tacho.c     ****     CyDelay(200);
+ 1372              		.loc 1 203 0
+ 1373 01c8 C820     		movs	r0, #200
+ 1374 01ca FFF7FEFF 		bl	CyDelay
+ 204:.\tacho.c     ****     flag_turn_around = 0;
+ 1375              		.loc 1 204 0
+ 1376 01ce 114B     		ldr	r3, .L51+28
+ 1377 01d0 0022     		movs	r2, #0
+ 1378 01d2 1A70     		strb	r2, [r3]
+ 205:.\tacho.c     ****     
+ 206:.\tacho.c     ****     MOVE_FORWARD
+ 1379              		.loc 1 206 0
+ 1380 01d4 0020     		movs	r0, #0
+ 1381 01d6 FFF7FEFF 		bl	PWM_CONTROL_Write
+ 207:.\tacho.c     ****     robot_direction = FORWARD;
+ 1382              		.loc 1 207 0
+ 1383 01da 0D4B     		ldr	r3, .L51+24
+ 1384 01dc 0022     		movs	r2, #0
+ 1385 01de 1A70     		strb	r2, [r3]
+ 208:.\tacho.c     ****     QuadDec_M1_SetCounter(0);
+ 1386              		.loc 1 208 0
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 29
+
+
+ 1387 01e0 0020     		movs	r0, #0
+ 1388 01e2 FFF7FEFF 		bl	QuadDec_M1_SetCounter
+ 209:.\tacho.c     ****     QuadDec_M2_SetCounter(0);
+ 1389              		.loc 1 209 0
+ 1390 01e6 0020     		movs	r0, #0
+ 1391 01e8 FFF7FEFF 		bl	QuadDec_M2_SetCounter
+ 210:.\tacho.c     ****     COAST_ON
+ 1392              		.loc 1 210 0
+ 1393 01ec 0120     		movs	r0, #1
+ 1394 01ee FFF7FEFF 		bl	H_BRIDGE_CONTROL_Write
+ 211:.\tacho.c     **** }
+ 1395              		.loc 1 211 0
+ 1396 01f2 1037     		adds	r7, r7, #16
+ 1397              		.cfi_def_cfa_offset 8
+ 1398 01f4 BD46     		mov	sp, r7
+ 1399              		.cfi_def_cfa_register 13
+ 1400              		@ sp needed
+ 1401 01f6 80BD     		pop	{r7, pc}
+ 1402              	.L52:
+ 1403              		.align	2
+ 1404              	.L51:
+ 1405 01f8 00000000 		.word	pwm_cmp_right
+ 1406 01fc 00000000 		.word	flag_veering
+ 1407 0200 00000000 		.word	robot_orientation
+ 1408 0204 00000000 		.word	path_index
+ 1409 0208 00000000 		.word	orientation
+ 1410 020c 00000000 		.word	path_orientation
+ 1411 0210 00000000 		.word	robot_direction
+ 1412 0214 00000000 		.word	flag_turn_around
+ 1413 0218 00000000 		.word	quad_cnt_left
+ 1414 021c 00000000 		.word	line_sensor_left
+ 1415              		.cfi_endproc
+ 1416              	.LFE65:
+ 1417              		.size	turn_robot, .-turn_robot
+ 1418              		.section	.text.get_light_sensors,"ax",%progbits
+ 1419              		.align	2
+ 1420              		.global	get_light_sensors
+ 1421              		.thumb
+ 1422              		.thumb_func
+ 1423              		.type	get_light_sensors, %function
+ 1424              	get_light_sensors:
+ 1425              	.LFB66:
+ 212:.\tacho.c     **** //* ========================================
+ 213:.\tacho.c     **** //* Robot Sensors */
+ 214:.\tacho.c     **** //* ========================================
+ 215:.\tacho.c     **** void get_light_sensors()
+ 216:.\tacho.c     **** {
+ 1426              		.loc 1 216 0
+ 1427              		.cfi_startproc
+ 1428              		@ args = 0, pretend = 0, frame = 0
+ 1429              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1430 0000 80B5     		push	{r7, lr}
+ 1431              		.cfi_def_cfa_offset 8
+ 1432              		.cfi_offset 7, -8
+ 1433              		.cfi_offset 14, -4
+ 1434 0002 00AF     		add	r7, sp, #0
+ 1435              		.cfi_def_cfa_register 7
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 30
+
+
+ 217:.\tacho.c     ****     int_sensor_left = INT_SENSOR_LEFT_Read();
+ 1436              		.loc 1 217 0
+ 1437 0004 FFF7FEFF 		bl	INT_SENSOR_LEFT_Read
+ 1438 0008 0346     		mov	r3, r0
+ 1439 000a 1A46     		mov	r2, r3
+ 1440 000c 0D4B     		ldr	r3, .L54
+ 1441 000e 1A70     		strb	r2, [r3]
+ 218:.\tacho.c     ****     int_sensor_right = INT_SENSOR_RIGHT_Read();
+ 1442              		.loc 1 218 0
+ 1443 0010 FFF7FEFF 		bl	INT_SENSOR_RIGHT_Read
+ 1444 0014 0346     		mov	r3, r0
+ 1445 0016 1A46     		mov	r2, r3
+ 1446 0018 0B4B     		ldr	r3, .L54+4
+ 1447 001a 1A70     		strb	r2, [r3]
+ 219:.\tacho.c     ****     line_sensor_centre = LINE_SENSOR_CENTRE_Read();
+ 1448              		.loc 1 219 0
+ 1449 001c FFF7FEFF 		bl	LINE_SENSOR_CENTRE_Read
+ 1450 0020 0346     		mov	r3, r0
+ 1451 0022 1A46     		mov	r2, r3
+ 1452 0024 094B     		ldr	r3, .L54+8
+ 1453 0026 1A70     		strb	r2, [r3]
+ 220:.\tacho.c     ****     line_sensor_left = LINE_SENSOR_LEFT_Read();
+ 1454              		.loc 1 220 0
+ 1455 0028 FFF7FEFF 		bl	LINE_SENSOR_LEFT_Read
+ 1456 002c 0346     		mov	r3, r0
+ 1457 002e 1A46     		mov	r2, r3
+ 1458 0030 074B     		ldr	r3, .L54+12
+ 1459 0032 1A70     		strb	r2, [r3]
+ 221:.\tacho.c     ****     line_sensor_right = LINE_SENSOR_RIGHT_Read();
+ 1460              		.loc 1 221 0
+ 1461 0034 FFF7FEFF 		bl	LINE_SENSOR_RIGHT_Read
+ 1462 0038 0346     		mov	r3, r0
+ 1463 003a 1A46     		mov	r2, r3
+ 1464 003c 054B     		ldr	r3, .L54+16
+ 1465 003e 1A70     		strb	r2, [r3]
+ 222:.\tacho.c     **** }
+ 1466              		.loc 1 222 0
+ 1467 0040 80BD     		pop	{r7, pc}
+ 1468              	.L55:
+ 1469 0042 00BF     		.align	2
+ 1470              	.L54:
+ 1471 0044 00000000 		.word	int_sensor_left
+ 1472 0048 00000000 		.word	int_sensor_right
+ 1473 004c 00000000 		.word	line_sensor_centre
+ 1474 0050 00000000 		.word	line_sensor_left
+ 1475 0054 00000000 		.word	line_sensor_right
+ 1476              		.cfi_endproc
+ 1477              	.LFE66:
+ 1478              		.size	get_light_sensors, .-get_light_sensors
+ 1479              		.section	.text.get_wheel_quadrature,"ax",%progbits
+ 1480              		.align	2
+ 1481              		.global	get_wheel_quadrature
+ 1482              		.thumb
+ 1483              		.thumb_func
+ 1484              		.type	get_wheel_quadrature, %function
+ 1485              	get_wheel_quadrature:
+ 1486              	.LFB67:
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 31
+
+
+ 223:.\tacho.c     **** //* ========================================
+ 224:.\tacho.c     **** void get_wheel_quadrature()
+ 225:.\tacho.c     **** {
+ 1487              		.loc 1 225 0
+ 1488              		.cfi_startproc
+ 1489              		@ args = 0, pretend = 0, frame = 0
+ 1490              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1491 0000 80B5     		push	{r7, lr}
+ 1492              		.cfi_def_cfa_offset 8
+ 1493              		.cfi_offset 7, -8
+ 1494              		.cfi_offset 14, -4
+ 1495 0002 00AF     		add	r7, sp, #0
+ 1496              		.cfi_def_cfa_register 7
+ 226:.\tacho.c     ****     // get the quadrature counts
+ 227:.\tacho.c     ****     quad_cnt_left = QuadDec_M1_GetCounter();
+ 1497              		.loc 1 227 0
+ 1498 0004 FFF7FEFF 		bl	QuadDec_M1_GetCounter
+ 1499 0008 0346     		mov	r3, r0
+ 1500 000a 1A46     		mov	r2, r3
+ 1501 000c 114B     		ldr	r3, .L59
+ 1502 000e 1A80     		strh	r2, [r3]	@ movhi
+ 228:.\tacho.c     ****     quad_cnt_right = QuadDec_M2_GetCounter();
+ 1503              		.loc 1 228 0
+ 1504 0010 FFF7FEFF 		bl	QuadDec_M2_GetCounter
+ 1505 0014 0346     		mov	r3, r0
+ 1506 0016 1A46     		mov	r2, r3
+ 1507 0018 0F4B     		ldr	r3, .L59+4
+ 1508 001a 1A80     		strh	r2, [r3]	@ movhi
+ 229:.\tacho.c     ****     
+ 230:.\tacho.c     ****     // take the absolute of the quadrature counts
+ 231:.\tacho.c     ****     if (quad_cnt_left < 0)
+ 1509              		.loc 1 231 0
+ 1510 001c 0D4B     		ldr	r3, .L59
+ 1511 001e 1B88     		ldrh	r3, [r3]
+ 1512 0020 1BB2     		sxth	r3, r3
+ 1513 0022 002B     		cmp	r3, #0
+ 1514 0024 07DA     		bge	.L57
+ 232:.\tacho.c     ****         quad_cnt_left = quad_cnt_left * -1;
+ 1515              		.loc 1 232 0
+ 1516 0026 0B4B     		ldr	r3, .L59
+ 1517 0028 1B88     		ldrh	r3, [r3]
+ 1518 002a 9BB2     		uxth	r3, r3
+ 1519 002c 5B42     		negs	r3, r3
+ 1520 002e 9BB2     		uxth	r3, r3
+ 1521 0030 9AB2     		uxth	r2, r3
+ 1522 0032 084B     		ldr	r3, .L59
+ 1523 0034 1A80     		strh	r2, [r3]	@ movhi
+ 1524              	.L57:
+ 233:.\tacho.c     ****     if (quad_cnt_right < 0)
+ 1525              		.loc 1 233 0
+ 1526 0036 084B     		ldr	r3, .L59+4
+ 1527 0038 1B88     		ldrh	r3, [r3]
+ 1528 003a 1BB2     		sxth	r3, r3
+ 1529 003c 002B     		cmp	r3, #0
+ 1530 003e 07DA     		bge	.L56
+ 234:.\tacho.c     ****         quad_cnt_right = quad_cnt_right * -1;
+ 1531              		.loc 1 234 0
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 32
+
+
+ 1532 0040 054B     		ldr	r3, .L59+4
+ 1533 0042 1B88     		ldrh	r3, [r3]
+ 1534 0044 9BB2     		uxth	r3, r3
+ 1535 0046 5B42     		negs	r3, r3
+ 1536 0048 9BB2     		uxth	r3, r3
+ 1537 004a 9AB2     		uxth	r2, r3
+ 1538 004c 024B     		ldr	r3, .L59+4
+ 1539 004e 1A80     		strh	r2, [r3]	@ movhi
+ 1540              	.L56:
+ 235:.\tacho.c     **** }
+ 1541              		.loc 1 235 0
+ 1542 0050 80BD     		pop	{r7, pc}
+ 1543              	.L60:
+ 1544 0052 00BF     		.align	2
+ 1545              	.L59:
+ 1546 0054 00000000 		.word	quad_cnt_left
+ 1547 0058 00000000 		.word	quad_cnt_right
+ 1548              		.cfi_endproc
+ 1549              	.LFE67:
+ 1550              		.size	get_wheel_quadrature, .-get_wheel_quadrature
+ 1551              		.section	.text.get_distance,"ax",%progbits
+ 1552              		.align	2
+ 1553              		.global	get_distance
+ 1554              		.thumb
+ 1555              		.thumb_func
+ 1556              		.type	get_distance, %function
+ 1557              	get_distance:
+ 1558              	.LFB68:
+ 236:.\tacho.c     **** //* ========================================
+ 237:.\tacho.c     **** void get_distance()
+ 238:.\tacho.c     **** {
+ 1559              		.loc 1 238 0
+ 1560              		.cfi_startproc
+ 1561              		@ args = 0, pretend = 0, frame = 0
+ 1562              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1563 0000 80B5     		push	{r7, lr}
+ 1564              		.cfi_def_cfa_offset 8
+ 1565              		.cfi_offset 7, -8
+ 1566              		.cfi_offset 14, -4
+ 1567 0002 00AF     		add	r7, sp, #0
+ 1568              		.cfi_def_cfa_register 7
+ 239:.\tacho.c     ****     get_wheel_quadrature();
+ 1569              		.loc 1 239 0
+ 1570 0004 FFF7FEFF 		bl	get_wheel_quadrature
+ 240:.\tacho.c     ****     
+ 241:.\tacho.c     ****     if (quad_cnt_left < quad_cnt_prev) {
+ 1571              		.loc 1 241 0
+ 1572 0008 114B     		ldr	r3, .L64
+ 1573 000a 1A88     		ldrh	r2, [r3]
+ 1574 000c 114B     		ldr	r3, .L64+4
+ 1575 000e 1B88     		ldrh	r3, [r3]
+ 1576 0010 12B2     		sxth	r2, r2
+ 1577 0012 1BB2     		sxth	r3, r3
+ 1578 0014 9A42     		cmp	r2, r3
+ 1579 0016 06DA     		bge	.L62
+ 242:.\tacho.c     ****         quad_cnt_prev = quad_cnt_left;
+ 1580              		.loc 1 242 0
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 33
+
+
+ 1581 0018 0D4B     		ldr	r3, .L64
+ 1582 001a 1A88     		ldrh	r2, [r3]
+ 1583 001c 0D4B     		ldr	r3, .L64+4
+ 1584 001e 1A80     		strh	r2, [r3]	@ movhi
+ 243:.\tacho.c     ****         straight_line_distance = 4;
+ 1585              		.loc 1 243 0
+ 1586 0020 0D4B     		ldr	r3, .L64+8
+ 1587 0022 0422     		movs	r2, #4
+ 1588 0024 1A70     		strb	r2, [r3]
+ 1589              	.L62:
+ 244:.\tacho.c     ****     }
+ 245:.\tacho.c     ****     
+ 246:.\tacho.c     ****     if (quad_cnt_left - quad_cnt_prev >= QUARTER_ROT) {
+ 1590              		.loc 1 246 0
+ 1591 0026 0A4B     		ldr	r3, .L64
+ 1592 0028 1B88     		ldrh	r3, [r3]
+ 1593 002a 1AB2     		sxth	r2, r3
+ 1594 002c 094B     		ldr	r3, .L64+4
+ 1595 002e 1B88     		ldrh	r3, [r3]
+ 1596 0030 1BB2     		sxth	r3, r3
+ 1597 0032 D31A     		subs	r3, r2, r3
+ 1598 0034 382B     		cmp	r3, #56
+ 1599 0036 09DD     		ble	.L61
+ 247:.\tacho.c     ****         straight_line_distance += QUARTER_CIRC;
+ 1600              		.loc 1 247 0
+ 1601 0038 074B     		ldr	r3, .L64+8
+ 1602 003a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1603 003c 0533     		adds	r3, r3, #5
+ 1604 003e DAB2     		uxtb	r2, r3
+ 1605 0040 054B     		ldr	r3, .L64+8
+ 1606 0042 1A70     		strb	r2, [r3]
+ 248:.\tacho.c     ****         quad_cnt_prev = quad_cnt_left;
+ 1607              		.loc 1 248 0
+ 1608 0044 024B     		ldr	r3, .L64
+ 1609 0046 1A88     		ldrh	r2, [r3]
+ 1610 0048 024B     		ldr	r3, .L64+4
+ 1611 004a 1A80     		strh	r2, [r3]	@ movhi
+ 1612              	.L61:
+ 249:.\tacho.c     ****     }
+ 250:.\tacho.c     **** }
+ 1613              		.loc 1 250 0
+ 1614 004c 80BD     		pop	{r7, pc}
+ 1615              	.L65:
+ 1616 004e 00BF     		.align	2
+ 1617              	.L64:
+ 1618 0050 00000000 		.word	quad_cnt_left
+ 1619 0054 00000000 		.word	quad_cnt_prev
+ 1620 0058 00000000 		.word	straight_line_distance
+ 1621              		.cfi_endproc
+ 1622              	.LFE68:
+ 1623              		.size	get_distance, .-get_distance
+ 1624              		.section	.text.get_next_event_index,"ax",%progbits
+ 1625              		.align	2
+ 1626              		.global	get_next_event_index
+ 1627              		.thumb
+ 1628              		.thumb_func
+ 1629              		.type	get_next_event_index, %function
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 34
+
+
+ 1630              	get_next_event_index:
+ 1631              	.LFB69:
+ 251:.\tacho.c     **** //* ========================================
+ 252:.\tacho.c     **** void get_next_event_index(int8 path[][2], uint16 path_length)
+ 253:.\tacho.c     **** {
+ 1632              		.loc 1 253 0
+ 1633              		.cfi_startproc
+ 1634              		@ args = 0, pretend = 0, frame = 16
+ 1635              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1636              		@ link register save eliminated.
+ 1637 0000 80B4     		push	{r7}
+ 1638              		.cfi_def_cfa_offset 4
+ 1639              		.cfi_offset 7, -4
+ 1640 0002 85B0     		sub	sp, sp, #20
+ 1641              		.cfi_def_cfa_offset 24
+ 1642 0004 00AF     		add	r7, sp, #0
+ 1643              		.cfi_def_cfa_register 7
+ 1644 0006 7860     		str	r0, [r7, #4]
+ 1645 0008 0B46     		mov	r3, r1
+ 1646 000a 7B80     		strh	r3, [r7, #2]	@ movhi
+ 254:.\tacho.c     ****     // loop through remainder of path from path index and look for intersections or dead ends
+ 255:.\tacho.c     ****     uint16 i;
+ 256:.\tacho.c     ****     (!path_index) ? (i = 0) : (i = path_index + 1);
+ 1647              		.loc 1 256 0
+ 1648 000c 7E4B     		ldr	r3, .L83
+ 1649 000e 1B88     		ldrh	r3, [r3]
+ 1650 0010 002B     		cmp	r3, #0
+ 1651 0012 02D1     		bne	.L67
+ 1652              		.loc 1 256 0 is_stmt 0 discriminator 1
+ 1653 0014 0023     		movs	r3, #0
+ 1654 0016 FB81     		strh	r3, [r7, #14]	@ movhi
+ 1655 0018 03E0     		b	.L68
+ 1656              	.L67:
+ 1657              		.loc 1 256 0 discriminator 2
+ 1658 001a 7B4B     		ldr	r3, .L83
+ 1659 001c 1B88     		ldrh	r3, [r3]
+ 1660 001e 0133     		adds	r3, r3, #1
+ 1661 0020 FB81     		strh	r3, [r7, #14]	@ movhi
+ 1662              	.L68:
+ 257:.\tacho.c     **** 	while (i < path_length) {
+ 1663              		.loc 1 257 0 is_stmt 1
+ 1664 0022 E6E0     		b	.L69
+ 1665              	.L82:
+ 258:.\tacho.c     **** 		if (robot_orientation == UP || robot_orientation == DOWN) {
+ 1666              		.loc 1 258 0
+ 1667 0024 794B     		ldr	r3, .L83+4
+ 1668 0026 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1669 0028 002B     		cmp	r3, #0
+ 1670 002a 03D0     		beq	.L70
+ 1671              		.loc 1 258 0 is_stmt 0 discriminator 1
+ 1672 002c 774B     		ldr	r3, .L83+4
+ 1673 002e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1674 0030 022B     		cmp	r3, #2
+ 1675 0032 37D1     		bne	.L71
+ 1676              	.L70:
+ 259:.\tacho.c     **** 			// look left and right for intersection
+ 260:.\tacho.c     **** 			if (!map[path[i][0]][path[i][1]-1] || !map[path[i][0]][path[i][1]+1]) {
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 35
+
+
+ 1677              		.loc 1 260 0 is_stmt 1
+ 1678 0034 FB89     		ldrh	r3, [r7, #14]
+ 1679 0036 5B00     		lsls	r3, r3, #1
+ 1680 0038 7A68     		ldr	r2, [r7, #4]
+ 1681 003a 1344     		add	r3, r3, r2
+ 1682 003c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1683 003e 5AB2     		sxtb	r2, r3
+ 1684 0040 FB89     		ldrh	r3, [r7, #14]
+ 1685 0042 5B00     		lsls	r3, r3, #1
+ 1686 0044 7968     		ldr	r1, [r7, #4]
+ 1687 0046 0B44     		add	r3, r3, r1
+ 1688 0048 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 1689 004a 5BB2     		sxtb	r3, r3
+ 1690 004c 591E     		subs	r1, r3, #1
+ 1691 004e 7048     		ldr	r0, .L83+8
+ 1692 0050 1346     		mov	r3, r2
+ 1693 0052 DB00     		lsls	r3, r3, #3
+ 1694 0054 1344     		add	r3, r3, r2
+ 1695 0056 5B00     		lsls	r3, r3, #1
+ 1696 0058 1344     		add	r3, r3, r2
+ 1697 005a 0B44     		add	r3, r3, r1
+ 1698 005c 50F82330 		ldr	r3, [r0, r3, lsl #2]
+ 1699 0060 002B     		cmp	r3, #0
+ 1700 0062 17D0     		beq	.L72
+ 1701              		.loc 1 260 0 is_stmt 0 discriminator 1
+ 1702 0064 FB89     		ldrh	r3, [r7, #14]
+ 1703 0066 5B00     		lsls	r3, r3, #1
+ 1704 0068 7A68     		ldr	r2, [r7, #4]
+ 1705 006a 1344     		add	r3, r3, r2
+ 1706 006c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1707 006e 5AB2     		sxtb	r2, r3
+ 1708 0070 FB89     		ldrh	r3, [r7, #14]
+ 1709 0072 5B00     		lsls	r3, r3, #1
+ 1710 0074 7968     		ldr	r1, [r7, #4]
+ 1711 0076 0B44     		add	r3, r3, r1
+ 1712 0078 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 1713 007a 5BB2     		sxtb	r3, r3
+ 1714 007c 591C     		adds	r1, r3, #1
+ 1715 007e 6448     		ldr	r0, .L83+8
+ 1716 0080 1346     		mov	r3, r2
+ 1717 0082 DB00     		lsls	r3, r3, #3
+ 1718 0084 1344     		add	r3, r3, r2
+ 1719 0086 5B00     		lsls	r3, r3, #1
+ 1720 0088 1344     		add	r3, r3, r2
+ 1721 008a 0B44     		add	r3, r3, r1
+ 1722 008c 50F82330 		ldr	r3, [r0, r3, lsl #2]
+ 1723 0090 002B     		cmp	r3, #0
+ 1724 0092 06D1     		bne	.L73
+ 1725              	.L72:
+ 261:.\tacho.c     **** 				next_event_index = i;
+ 1726              		.loc 1 261 0 is_stmt 1
+ 1727 0094 5F4A     		ldr	r2, .L83+12
+ 1728 0096 FB89     		ldrh	r3, [r7, #14]	@ movhi
+ 1729 0098 1380     		strh	r3, [r2]	@ movhi
+ 262:.\tacho.c     ****                 flag_next_event_intersection = 1;
+ 1730              		.loc 1 262 0
+ 1731 009a 5F4B     		ldr	r3, .L83+16
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 36
+
+
+ 1732 009c 0122     		movs	r2, #1
+ 1733 009e 1A70     		strb	r2, [r3]
+ 263:.\tacho.c     **** 				break;
+ 1734              		.loc 1 263 0
+ 1735 00a0 ACE0     		b	.L66
+ 1736              	.L73:
+ 260:.\tacho.c     **** 				next_event_index = i;
+ 1737              		.loc 1 260 0
+ 1738 00a2 3EE0     		b	.L75
+ 1739              	.L71:
+ 264:.\tacho.c     **** 			}
+ 265:.\tacho.c     ****         }
+ 266:.\tacho.c     ****         else if (robot_orientation == LEFT || robot_orientation == RIGHT) {
+ 1740              		.loc 1 266 0
+ 1741 00a4 594B     		ldr	r3, .L83+4
+ 1742 00a6 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1743 00a8 032B     		cmp	r3, #3
+ 1744 00aa 03D0     		beq	.L76
+ 1745              		.loc 1 266 0 is_stmt 0 discriminator 1
+ 1746 00ac 574B     		ldr	r3, .L83+4
+ 1747 00ae 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1748 00b0 012B     		cmp	r3, #1
+ 1749 00b2 36D1     		bne	.L75
+ 1750              	.L76:
+ 267:.\tacho.c     **** 			// look up and down for intersection
+ 268:.\tacho.c     **** 			if (!map[path[i][0]-1][path[i][1]] || !map[path[i][0]+1][path[i][1]]) {
+ 1751              		.loc 1 268 0 is_stmt 1
+ 1752 00b4 FB89     		ldrh	r3, [r7, #14]
+ 1753 00b6 5B00     		lsls	r3, r3, #1
+ 1754 00b8 7A68     		ldr	r2, [r7, #4]
+ 1755 00ba 1344     		add	r3, r3, r2
+ 1756 00bc 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1757 00be 5BB2     		sxtb	r3, r3
+ 1758 00c0 5A1E     		subs	r2, r3, #1
+ 1759 00c2 FB89     		ldrh	r3, [r7, #14]
+ 1760 00c4 5B00     		lsls	r3, r3, #1
+ 1761 00c6 7968     		ldr	r1, [r7, #4]
+ 1762 00c8 0B44     		add	r3, r3, r1
+ 1763 00ca 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 1764 00cc 59B2     		sxtb	r1, r3
+ 1765 00ce 5048     		ldr	r0, .L83+8
+ 1766 00d0 1346     		mov	r3, r2
+ 1767 00d2 DB00     		lsls	r3, r3, #3
+ 1768 00d4 1344     		add	r3, r3, r2
+ 1769 00d6 5B00     		lsls	r3, r3, #1
+ 1770 00d8 1344     		add	r3, r3, r2
+ 1771 00da 0B44     		add	r3, r3, r1
+ 1772 00dc 50F82330 		ldr	r3, [r0, r3, lsl #2]
+ 1773 00e0 002B     		cmp	r3, #0
+ 1774 00e2 17D0     		beq	.L77
+ 1775              		.loc 1 268 0 is_stmt 0 discriminator 1
+ 1776 00e4 FB89     		ldrh	r3, [r7, #14]
+ 1777 00e6 5B00     		lsls	r3, r3, #1
+ 1778 00e8 7A68     		ldr	r2, [r7, #4]
+ 1779 00ea 1344     		add	r3, r3, r2
+ 1780 00ec 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1781 00ee 5BB2     		sxtb	r3, r3
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 37
+
+
+ 1782 00f0 5A1C     		adds	r2, r3, #1
+ 1783 00f2 FB89     		ldrh	r3, [r7, #14]
+ 1784 00f4 5B00     		lsls	r3, r3, #1
+ 1785 00f6 7968     		ldr	r1, [r7, #4]
+ 1786 00f8 0B44     		add	r3, r3, r1
+ 1787 00fa 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 1788 00fc 59B2     		sxtb	r1, r3
+ 1789 00fe 4448     		ldr	r0, .L83+8
+ 1790 0100 1346     		mov	r3, r2
+ 1791 0102 DB00     		lsls	r3, r3, #3
+ 1792 0104 1344     		add	r3, r3, r2
+ 1793 0106 5B00     		lsls	r3, r3, #1
+ 1794 0108 1344     		add	r3, r3, r2
+ 1795 010a 0B44     		add	r3, r3, r1
+ 1796 010c 50F82330 		ldr	r3, [r0, r3, lsl #2]
+ 1797 0110 002B     		cmp	r3, #0
+ 1798 0112 06D1     		bne	.L75
+ 1799              	.L77:
+ 269:.\tacho.c     **** 				next_event_index = i;
+ 1800              		.loc 1 269 0 is_stmt 1
+ 1801 0114 3F4A     		ldr	r2, .L83+12
+ 1802 0116 FB89     		ldrh	r3, [r7, #14]	@ movhi
+ 1803 0118 1380     		strh	r3, [r2]	@ movhi
+ 270:.\tacho.c     ****                 flag_next_event_intersection = 1;
+ 1804              		.loc 1 270 0
+ 1805 011a 3F4B     		ldr	r3, .L83+16
+ 1806 011c 0122     		movs	r2, #1
+ 1807 011e 1A70     		strb	r2, [r3]
+ 271:.\tacho.c     **** 				break;
+ 1808              		.loc 1 271 0
+ 1809 0120 6CE0     		b	.L66
+ 1810              	.L75:
+ 272:.\tacho.c     **** 			}
+ 273:.\tacho.c     ****         }
+ 274:.\tacho.c     ****         // look ahead for dead end
+ 275:.\tacho.c     ****         if (map[NEXT_ROW(i)][NEXT_COL(i)]) {
+ 1811              		.loc 1 275 0
+ 1812 0122 FB89     		ldrh	r3, [r7, #14]
+ 1813 0124 5B00     		lsls	r3, r3, #1
+ 1814 0126 7A68     		ldr	r2, [r7, #4]
+ 1815 0128 1344     		add	r3, r3, r2
+ 1816 012a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1817 012c 5AB2     		sxtb	r2, r3
+ 1818 012e 3B4B     		ldr	r3, .L83+20
+ 1819 0130 1B68     		ldr	r3, [r3]
+ 1820 0132 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1821 0134 5BB2     		sxtb	r3, r3
+ 1822 0136 1A44     		add	r2, r2, r3
+ 1823 0138 FB89     		ldrh	r3, [r7, #14]
+ 1824 013a 5B00     		lsls	r3, r3, #1
+ 1825 013c 7968     		ldr	r1, [r7, #4]
+ 1826 013e 0B44     		add	r3, r3, r1
+ 1827 0140 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 1828 0142 59B2     		sxtb	r1, r3
+ 1829 0144 354B     		ldr	r3, .L83+20
+ 1830 0146 1B68     		ldr	r3, [r3]
+ 1831 0148 0133     		adds	r3, r3, #1
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 38
+
+
+ 1832 014a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1833 014c 5BB2     		sxtb	r3, r3
+ 1834 014e 1944     		add	r1, r1, r3
+ 1835 0150 2F48     		ldr	r0, .L83+8
+ 1836 0152 1346     		mov	r3, r2
+ 1837 0154 DB00     		lsls	r3, r3, #3
+ 1838 0156 1344     		add	r3, r3, r2
+ 1839 0158 5B00     		lsls	r3, r3, #1
+ 1840 015a 1344     		add	r3, r3, r2
+ 1841 015c 0B44     		add	r3, r3, r1
+ 1842 015e 50F82330 		ldr	r3, [r0, r3, lsl #2]
+ 1843 0162 002B     		cmp	r3, #0
+ 1844 0164 06D0     		beq	.L78
+ 276:.\tacho.c     ****             next_event_index = i;
+ 1845              		.loc 1 276 0
+ 1846 0166 2B4A     		ldr	r2, .L83+12
+ 1847 0168 FB89     		ldrh	r3, [r7, #14]	@ movhi
+ 1848 016a 1380     		strh	r3, [r2]	@ movhi
+ 277:.\tacho.c     ****             flag_next_event_deadend = 1;
+ 1849              		.loc 1 277 0
+ 1850 016c 2C4B     		ldr	r3, .L83+24
+ 1851 016e 0122     		movs	r2, #1
+ 1852 0170 1A70     		strb	r2, [r3]
+ 278:.\tacho.c     **** 			break;
+ 1853              		.loc 1 278 0
+ 1854 0172 43E0     		b	.L66
+ 1855              	.L78:
+ 279:.\tacho.c     ****         }
+ 280:.\tacho.c     ****         // if final path node is not intersection or dead end it must be pellet in line
+ 281:.\tacho.c     ****         else if (i == path_length - 1) {
+ 1856              		.loc 1 281 0
+ 1857 0174 FA89     		ldrh	r2, [r7, #14]
+ 1858 0176 7B88     		ldrh	r3, [r7, #2]
+ 1859 0178 013B     		subs	r3, r3, #1
+ 1860 017a 9A42     		cmp	r2, r3
+ 1861 017c 06D1     		bne	.L79
+ 282:.\tacho.c     ****             next_event_index = i;
+ 1862              		.loc 1 282 0
+ 1863 017e 254A     		ldr	r2, .L83+12
+ 1864 0180 FB89     		ldrh	r3, [r7, #14]	@ movhi
+ 1865 0182 1380     		strh	r3, [r2]	@ movhi
+ 283:.\tacho.c     ****             flag_next_event_u_turn = 1;
+ 1866              		.loc 1 283 0
+ 1867 0184 274B     		ldr	r3, .L83+28
+ 1868 0186 0122     		movs	r2, #1
+ 1869 0188 1A70     		strb	r2, [r3]
+ 284:.\tacho.c     **** 			break;
+ 1870              		.loc 1 284 0
+ 1871 018a 37E0     		b	.L66
+ 1872              	.L79:
+ 285:.\tacho.c     ****         }
+ 286:.\tacho.c     ****         // if no intersections or dead ends found and not end of end of path look for pellet in lin
+ 287:.\tacho.c     ****         else {
+ 288:.\tacho.c     ****             if (NEXT_ROW(i) != path[i+1][0] || NEXT_COL(i) != path[i+1][1]) {
+ 1873              		.loc 1 288 0
+ 1874 018c FB89     		ldrh	r3, [r7, #14]
+ 1875 018e 5B00     		lsls	r3, r3, #1
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 39
+
+
+ 1876 0190 7A68     		ldr	r2, [r7, #4]
+ 1877 0192 1344     		add	r3, r3, r2
+ 1878 0194 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1879 0196 5AB2     		sxtb	r2, r3
+ 1880 0198 204B     		ldr	r3, .L83+20
+ 1881 019a 1B68     		ldr	r3, [r3]
+ 1882 019c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1883 019e 5BB2     		sxtb	r3, r3
+ 1884 01a0 1A44     		add	r2, r2, r3
+ 1885 01a2 FB89     		ldrh	r3, [r7, #14]
+ 1886 01a4 0133     		adds	r3, r3, #1
+ 1887 01a6 5B00     		lsls	r3, r3, #1
+ 1888 01a8 7968     		ldr	r1, [r7, #4]
+ 1889 01aa 0B44     		add	r3, r3, r1
+ 1890 01ac 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1891 01ae 5BB2     		sxtb	r3, r3
+ 1892 01b0 9A42     		cmp	r2, r3
+ 1893 01b2 14D1     		bne	.L80
+ 1894              		.loc 1 288 0 is_stmt 0 discriminator 1
+ 1895 01b4 FB89     		ldrh	r3, [r7, #14]
+ 1896 01b6 5B00     		lsls	r3, r3, #1
+ 1897 01b8 7A68     		ldr	r2, [r7, #4]
+ 1898 01ba 1344     		add	r3, r3, r2
+ 1899 01bc 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 1900 01be 5AB2     		sxtb	r2, r3
+ 1901 01c0 164B     		ldr	r3, .L83+20
+ 1902 01c2 1B68     		ldr	r3, [r3]
+ 1903 01c4 0133     		adds	r3, r3, #1
+ 1904 01c6 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1905 01c8 5BB2     		sxtb	r3, r3
+ 1906 01ca 1A44     		add	r2, r2, r3
+ 1907 01cc FB89     		ldrh	r3, [r7, #14]
+ 1908 01ce 0133     		adds	r3, r3, #1
+ 1909 01d0 5B00     		lsls	r3, r3, #1
+ 1910 01d2 7968     		ldr	r1, [r7, #4]
+ 1911 01d4 0B44     		add	r3, r3, r1
+ 1912 01d6 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 1913 01d8 5BB2     		sxtb	r3, r3
+ 1914 01da 9A42     		cmp	r2, r3
+ 1915 01dc 06D0     		beq	.L81
+ 1916              	.L80:
+ 289:.\tacho.c     ****                 next_event_index = i;
+ 1917              		.loc 1 289 0 is_stmt 1
+ 1918 01de 0D4A     		ldr	r2, .L83+12
+ 1919 01e0 FB89     		ldrh	r3, [r7, #14]	@ movhi
+ 1920 01e2 1380     		strh	r3, [r2]	@ movhi
+ 290:.\tacho.c     ****                 flag_next_event_u_turn = 1;
+ 1921              		.loc 1 290 0
+ 1922 01e4 0F4B     		ldr	r3, .L83+28
+ 1923 01e6 0122     		movs	r2, #1
+ 1924 01e8 1A70     		strb	r2, [r3]
+ 291:.\tacho.c     ****     			break;
+ 1925              		.loc 1 291 0
+ 1926 01ea 07E0     		b	.L66
+ 1927              	.L81:
+ 292:.\tacho.c     ****             }
+ 293:.\tacho.c     ****         }
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 40
+
+
+ 294:.\tacho.c     ****         i++;
+ 1928              		.loc 1 294 0
+ 1929 01ec FB89     		ldrh	r3, [r7, #14]
+ 1930 01ee 0133     		adds	r3, r3, #1
+ 1931 01f0 FB81     		strh	r3, [r7, #14]	@ movhi
+ 1932              	.L69:
+ 257:.\tacho.c     **** 		if (robot_orientation == UP || robot_orientation == DOWN) {
+ 1933              		.loc 1 257 0
+ 1934 01f2 FA89     		ldrh	r2, [r7, #14]
+ 1935 01f4 7B88     		ldrh	r3, [r7, #2]
+ 1936 01f6 9A42     		cmp	r2, r3
+ 1937 01f8 FFF414AF 		bcc	.L82
+ 1938              	.L66:
+ 295:.\tacho.c     **** 	}
+ 296:.\tacho.c     **** }
+ 1939              		.loc 1 296 0
+ 1940 01fc 1437     		adds	r7, r7, #20
+ 1941              		.cfi_def_cfa_offset 4
+ 1942 01fe BD46     		mov	sp, r7
+ 1943              		.cfi_def_cfa_register 13
+ 1944              		@ sp needed
+ 1945 0200 5DF8047B 		ldr	r7, [sp], #4
+ 1946              		.cfi_restore 7
+ 1947              		.cfi_def_cfa_offset 0
+ 1948 0204 7047     		bx	lr
+ 1949              	.L84:
+ 1950 0206 00BF     		.align	2
+ 1951              	.L83:
+ 1952 0208 00000000 		.word	path_index
+ 1953 020c 00000000 		.word	robot_orientation
+ 1954 0210 00000000 		.word	map
+ 1955 0214 00000000 		.word	next_event_index
+ 1956 0218 00000000 		.word	flag_next_event_intersection
+ 1957 021c 00000000 		.word	path_orientation
+ 1958 0220 00000000 		.word	flag_next_event_deadend
+ 1959 0224 00000000 		.word	flag_next_event_u_turn
+ 1960              		.cfi_endproc
+ 1961              	.LFE69:
+ 1962              		.size	get_next_event_index, .-get_next_event_index
+ 1963              		.section	.text.update_robot_position,"ax",%progbits
+ 1964              		.align	2
+ 1965              		.global	update_robot_position
+ 1966              		.thumb
+ 1967              		.thumb_func
+ 1968              		.type	update_robot_position, %function
+ 1969              	update_robot_position:
+ 1970              	.LFB70:
+ 297:.\tacho.c     **** //* ========================================
+ 298:.\tacho.c     **** void update_robot_position(int8 path[][2], uint16 path_length)
+ 299:.\tacho.c     **** {
+ 1971              		.loc 1 299 0
+ 1972              		.cfi_startproc
+ 1973              		@ args = 0, pretend = 0, frame = 8
+ 1974              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1975 0000 80B5     		push	{r7, lr}
+ 1976              		.cfi_def_cfa_offset 8
+ 1977              		.cfi_offset 7, -8
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 41
+
+
+ 1978              		.cfi_offset 14, -4
+ 1979 0002 82B0     		sub	sp, sp, #8
+ 1980              		.cfi_def_cfa_offset 16
+ 1981 0004 00AF     		add	r7, sp, #0
+ 1982              		.cfi_def_cfa_register 7
+ 1983 0006 7860     		str	r0, [r7, #4]
+ 1984 0008 0B46     		mov	r3, r1
+ 1985 000a 7B80     		strh	r3, [r7, #2]	@ movhi
+ 300:.\tacho.c     ****     get_distance();
+ 1986              		.loc 1 300 0
+ 1987 000c FFF7FEFF 		bl	get_distance
+ 301:.\tacho.c     ****     if (straight_line_distance < distance_prev)
+ 1988              		.loc 1 301 0
+ 1989 0010 1A4B     		ldr	r3, .L89
+ 1990 0012 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 1991 0014 1A4B     		ldr	r3, .L89+4
+ 1992 0016 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1993 0018 9A42     		cmp	r2, r3
+ 1994 001a 02D2     		bcs	.L86
+ 302:.\tacho.c     ****         distance_prev = 0;
+ 1995              		.loc 1 302 0
+ 1996 001c 184B     		ldr	r3, .L89+4
+ 1997 001e 0022     		movs	r2, #0
+ 1998 0020 1A70     		strb	r2, [r3]
+ 1999              	.L86:
+ 303:.\tacho.c     ****     
+ 304:.\tacho.c     ****     if (straight_line_distance - distance_prev >= BLOCK_DIST) {
+ 2000              		.loc 1 304 0
+ 2001 0022 164B     		ldr	r3, .L89
+ 2002 0024 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 2003 0026 1A46     		mov	r2, r3
+ 2004 0028 154B     		ldr	r3, .L89+4
+ 2005 002a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 2006 002c D31A     		subs	r3, r2, r3
+ 2007 002e 0C2B     		cmp	r3, #12
+ 2008 0030 20DD     		ble	.L85
+ 305:.\tacho.c     ****         robot_position_index++;
+ 2009              		.loc 1 305 0
+ 2010 0032 144B     		ldr	r3, .L89+8
+ 2011 0034 1B88     		ldrh	r3, [r3]
+ 2012 0036 0133     		adds	r3, r3, #1
+ 2013 0038 9AB2     		uxth	r2, r3
+ 2014 003a 124B     		ldr	r3, .L89+8
+ 2015 003c 1A80     		strh	r2, [r3]	@ movhi
+ 306:.\tacho.c     ****         if (robot_position_index < path_length) {
+ 2016              		.loc 1 306 0
+ 2017 003e 114B     		ldr	r3, .L89+8
+ 2018 0040 1B88     		ldrh	r3, [r3]
+ 2019 0042 7A88     		ldrh	r2, [r7, #2]
+ 2020 0044 9A42     		cmp	r2, r3
+ 2021 0046 11D9     		bls	.L88
+ 307:.\tacho.c     ****             // set robot position
+ 308:.\tacho.c     ****             robot_y_pos = path[robot_position_index][0];
+ 2022              		.loc 1 308 0
+ 2023 0048 0E4B     		ldr	r3, .L89+8
+ 2024 004a 1B88     		ldrh	r3, [r3]
+ 2025 004c 5B00     		lsls	r3, r3, #1
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 42
+
+
+ 2026 004e 7A68     		ldr	r2, [r7, #4]
+ 2027 0050 1344     		add	r3, r3, r2
+ 2028 0052 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 2029 0054 DAB2     		uxtb	r2, r3
+ 2030 0056 0C4B     		ldr	r3, .L89+12
+ 2031 0058 1A70     		strb	r2, [r3]
+ 309:.\tacho.c     ****             robot_x_pos = path[robot_position_index][1];
+ 2032              		.loc 1 309 0
+ 2033 005a 0A4B     		ldr	r3, .L89+8
+ 2034 005c 1B88     		ldrh	r3, [r3]
+ 2035 005e 5B00     		lsls	r3, r3, #1
+ 2036 0060 7A68     		ldr	r2, [r7, #4]
+ 2037 0062 1344     		add	r3, r3, r2
+ 2038 0064 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 2039 0066 DAB2     		uxtb	r2, r3
+ 2040 0068 084B     		ldr	r3, .L89+16
+ 2041 006a 1A70     		strb	r2, [r3]
+ 2042              	.L88:
+ 310:.\tacho.c     ****         }
+ 311:.\tacho.c     ****         distance_prev = straight_line_distance;
+ 2043              		.loc 1 311 0
+ 2044 006c 034B     		ldr	r3, .L89
+ 2045 006e 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 2046 0070 034B     		ldr	r3, .L89+4
+ 2047 0072 1A70     		strb	r2, [r3]
+ 2048              	.L85:
+ 312:.\tacho.c     ****     }
+ 313:.\tacho.c     **** }
+ 2049              		.loc 1 313 0
+ 2050 0074 0837     		adds	r7, r7, #8
+ 2051              		.cfi_def_cfa_offset 8
+ 2052 0076 BD46     		mov	sp, r7
+ 2053              		.cfi_def_cfa_register 13
+ 2054              		@ sp needed
+ 2055 0078 80BD     		pop	{r7, pc}
+ 2056              	.L90:
+ 2057 007a 00BF     		.align	2
+ 2058              	.L89:
+ 2059 007c 00000000 		.word	straight_line_distance
+ 2060 0080 00000000 		.word	distance_prev
+ 2061 0084 00000000 		.word	robot_position_index
+ 2062 0088 00000000 		.word	robot_y_pos
+ 2063 008c 00000000 		.word	robot_x_pos
+ 2064              		.cfi_endproc
+ 2065              	.LFE70:
+ 2066              		.size	update_robot_position, .-update_robot_position
+ 2067              		.text
+ 2068              	.Letext0:
+ 2069              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\3.3\\psoc creator\\import\\gnu\\arm\\4.9.
+ 2070              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\3.3\\psoc creator\\import\\gnu\\arm\\4.9.
+ 2071              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 2072              		.file 5 ".\\vars.h"
+ 2073              		.file 6 "Generated_Source\\PSoC5/core_cm3.h"
+ 2074              		.file 7 ".\\map.h"
+ 2075              		.section	.debug_info,"",%progbits
+ 2076              	.Ldebug_info0:
+ 2077 0000 F8040000 		.4byte	0x4f8
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 43
+
+
+ 2078 0004 0400     		.2byte	0x4
+ 2079 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 2080 000a 04       		.byte	0x4
+ 2081 000b 01       		.uleb128 0x1
+ 2082 000c 7D010000 		.4byte	.LASF74
+ 2083 0010 01       		.byte	0x1
+ 2084 0011 0C000000 		.4byte	.LASF75
+ 2085 0015 1F010000 		.4byte	.LASF76
+ 2086 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 2087 001d 00000000 		.4byte	0
+ 2088 0021 00000000 		.4byte	.Ldebug_line0
+ 2089 0025 02       		.uleb128 0x2
+ 2090 0026 01       		.byte	0x1
+ 2091 0027 06       		.byte	0x6
+ 2092 0028 C2020000 		.4byte	.LASF0
+ 2093 002c 02       		.uleb128 0x2
+ 2094 002d 01       		.byte	0x1
+ 2095 002e 08       		.byte	0x8
+ 2096 002f 84020000 		.4byte	.LASF1
+ 2097 0033 02       		.uleb128 0x2
+ 2098 0034 02       		.byte	0x2
+ 2099 0035 05       		.byte	0x5
+ 2100 0036 C8000000 		.4byte	.LASF2
+ 2101 003a 02       		.uleb128 0x2
+ 2102 003b 02       		.byte	0x2
+ 2103 003c 07       		.byte	0x7
+ 2104 003d 2B030000 		.4byte	.LASF3
+ 2105 0041 03       		.uleb128 0x3
+ 2106 0042 FB030000 		.4byte	.LASF14
+ 2107 0046 02       		.byte	0x2
+ 2108 0047 3F       		.byte	0x3f
+ 2109 0048 4C000000 		.4byte	0x4c
+ 2110 004c 02       		.uleb128 0x2
+ 2111 004d 04       		.byte	0x4
+ 2112 004e 05       		.byte	0x5
+ 2113 004f 43030000 		.4byte	.LASF4
+ 2114 0053 02       		.uleb128 0x2
+ 2115 0054 04       		.byte	0x4
+ 2116 0055 07       		.byte	0x7
+ 2117 0056 98030000 		.4byte	.LASF5
+ 2118 005a 02       		.uleb128 0x2
+ 2119 005b 08       		.byte	0x8
+ 2120 005c 05       		.byte	0x5
+ 2121 005d 11010000 		.4byte	.LASF6
+ 2122 0061 02       		.uleb128 0x2
+ 2123 0062 08       		.byte	0x8
+ 2124 0063 07       		.byte	0x7
+ 2125 0064 D6020000 		.4byte	.LASF7
+ 2126 0068 04       		.uleb128 0x4
+ 2127 0069 04       		.byte	0x4
+ 2128 006a 05       		.byte	0x5
+ 2129 006b 696E7400 		.ascii	"int\000"
+ 2130 006f 02       		.uleb128 0x2
+ 2131 0070 04       		.byte	0x4
+ 2132 0071 07       		.byte	0x7
+ 2133 0072 ED020000 		.4byte	.LASF8
+ 2134 0076 02       		.uleb128 0x2
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 44
+
+
+ 2135 0077 04       		.byte	0x4
+ 2136 0078 07       		.byte	0x7
+ 2137 0079 47040000 		.4byte	.LASF9
+ 2138 007d 02       		.uleb128 0x2
+ 2139 007e 01       		.byte	0x1
+ 2140 007f 08       		.byte	0x8
+ 2141 0080 3E030000 		.4byte	.LASF10
+ 2142 0084 02       		.uleb128 0x2
+ 2143 0085 08       		.byte	0x8
+ 2144 0086 04       		.byte	0x4
+ 2145 0087 AA030000 		.4byte	.LASF11
+ 2146 008b 02       		.uleb128 0x2
+ 2147 008c 04       		.byte	0x4
+ 2148 008d 04       		.byte	0x4
+ 2149 008e FE000000 		.4byte	.LASF12
+ 2150 0092 02       		.uleb128 0x2
+ 2151 0093 08       		.byte	0x8
+ 2152 0094 04       		.byte	0x4
+ 2153 0095 AE000000 		.4byte	.LASF13
+ 2154 0099 03       		.uleb128 0x3
+ 2155 009a CE020000 		.4byte	.LASF15
+ 2156 009e 03       		.byte	0x3
+ 2157 009f 2C       		.byte	0x2c
+ 2158 00a0 41000000 		.4byte	0x41
+ 2159 00a4 05       		.uleb128 0x5
+ 2160 00a5 EA000000 		.4byte	.LASF16
+ 2161 00a9 04       		.byte	0x4
+ 2162 00aa 9201     		.2byte	0x192
+ 2163 00ac 2C000000 		.4byte	0x2c
+ 2164 00b0 05       		.uleb128 0x5
+ 2165 00b1 D2000000 		.4byte	.LASF17
+ 2166 00b5 04       		.byte	0x4
+ 2167 00b6 9301     		.2byte	0x193
+ 2168 00b8 3A000000 		.4byte	0x3a
+ 2169 00bc 05       		.uleb128 0x5
+ 2170 00bd 57010000 		.4byte	.LASF18
+ 2171 00c1 04       		.byte	0x4
+ 2172 00c2 9501     		.2byte	0x195
+ 2173 00c4 25000000 		.4byte	0x25
+ 2174 00c8 05       		.uleb128 0x5
+ 2175 00c9 E4000000 		.4byte	.LASF19
+ 2176 00cd 04       		.byte	0x4
+ 2177 00ce 9601     		.2byte	0x196
+ 2178 00d0 33000000 		.4byte	0x33
+ 2179 00d4 06       		.uleb128 0x6
+ 2180 00d5 13040000 		.4byte	.LASF24
+ 2181 00d9 01       		.byte	0x1
+ 2182 00da 05       		.byte	0x5
+ 2183 00db 1C       		.byte	0x1c
+ 2184 00dc F9000000 		.4byte	0xf9
+ 2185 00e0 07       		.uleb128 0x7
+ 2186 00e1 1F020000 		.4byte	.LASF20
+ 2187 00e5 00       		.sleb128 0
+ 2188 00e6 07       		.uleb128 0x7
+ 2189 00e7 56000000 		.4byte	.LASF21
+ 2190 00eb 03       		.sleb128 3
+ 2191 00ec 07       		.uleb128 0x7
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 45
+
+
+ 2192 00ed 92020000 		.4byte	.LASF22
+ 2193 00f1 01       		.sleb128 1
+ 2194 00f2 07       		.uleb128 0x7
+ 2195 00f3 A9000000 		.4byte	.LASF23
+ 2196 00f7 02       		.sleb128 2
+ 2197 00f8 00       		.byte	0
+ 2198 00f9 06       		.uleb128 0x6
+ 2199 00fa 04010000 		.4byte	.LASF25
+ 2200 00fe 01       		.byte	0x1
+ 2201 00ff 05       		.byte	0x5
+ 2202 0100 2D       		.byte	0x2d
+ 2203 0101 1D010000 		.4byte	0x11d
+ 2204 0105 08       		.uleb128 0x8
+ 2205 0106 555000   		.ascii	"UP\000"
+ 2206 0109 00       		.sleb128 0
+ 2207 010a 07       		.uleb128 0x7
+ 2208 010b 2C000000 		.4byte	.LASF26
+ 2209 010f 01       		.sleb128 1
+ 2210 0110 07       		.uleb128 0x7
+ 2211 0111 5E030000 		.4byte	.LASF27
+ 2212 0115 02       		.sleb128 2
+ 2213 0116 07       		.uleb128 0x7
+ 2214 0117 3A020000 		.4byte	.LASF28
+ 2215 011b 03       		.sleb128 3
+ 2216 011c 00       		.byte	0
+ 2217 011d 09       		.uleb128 0x9
+ 2218 011e B1030000 		.4byte	.LASF77
+ 2219 0122 01       		.byte	0x1
+ 2220 0123 1A       		.byte	0x1a
+ 2221 0124 A4000000 		.4byte	0xa4
+ 2222 0128 00000000 		.4byte	.LFB63
+ 2223 012c 30020000 		.4byte	.LFE63-.LFB63
+ 2224 0130 01       		.uleb128 0x1
+ 2225 0131 9C       		.byte	0x9c
+ 2226 0132 53010000 		.4byte	0x153
+ 2227 0136 0A       		.uleb128 0xa
+ 2228 0137 1E040000 		.4byte	.LASF29
+ 2229 013b 01       		.byte	0x1
+ 2230 013c 1A       		.byte	0x1a
+ 2231 013d 63010000 		.4byte	0x163
+ 2232 0141 02       		.uleb128 0x2
+ 2233 0142 91       		.byte	0x91
+ 2234 0143 74       		.sleb128 -12
+ 2235 0144 0A       		.uleb128 0xa
+ 2236 0145 50040000 		.4byte	.LASF30
+ 2237 0149 01       		.byte	0x1
+ 2238 014a 1A       		.byte	0x1a
+ 2239 014b B0000000 		.4byte	0xb0
+ 2240 014f 02       		.uleb128 0x2
+ 2241 0150 91       		.byte	0x91
+ 2242 0151 72       		.sleb128 -14
+ 2243 0152 00       		.byte	0
+ 2244 0153 0B       		.uleb128 0xb
+ 2245 0154 BC000000 		.4byte	0xbc
+ 2246 0158 63010000 		.4byte	0x163
+ 2247 015c 0C       		.uleb128 0xc
+ 2248 015d 76000000 		.4byte	0x76
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 46
+
+
+ 2249 0161 01       		.byte	0x1
+ 2250 0162 00       		.byte	0
+ 2251 0163 0D       		.uleb128 0xd
+ 2252 0164 04       		.byte	0x4
+ 2253 0165 53010000 		.4byte	0x153
+ 2254 0169 0E       		.uleb128 0xe
+ 2255 016a 56020000 		.4byte	.LASF33
+ 2256 016e 01       		.byte	0x1
+ 2257 016f 71       		.byte	0x71
+ 2258 0170 00000000 		.4byte	.LFB64
+ 2259 0174 5C010000 		.4byte	.LFE64-.LFB64
+ 2260 0178 01       		.uleb128 0x1
+ 2261 0179 9C       		.byte	0x9c
+ 2262 017a 0F       		.uleb128 0xf
+ 2263 017b D9000000 		.4byte	.LASF37
+ 2264 017f 01       		.byte	0x1
+ 2265 0180 9B       		.byte	0x9b
+ 2266 0181 00000000 		.4byte	.LFB65
+ 2267 0185 20020000 		.4byte	.LFE65-.LFB65
+ 2268 0189 01       		.uleb128 0x1
+ 2269 018a 9C       		.byte	0x9c
+ 2270 018b BA010000 		.4byte	0x1ba
+ 2271 018f 0A       		.uleb128 0xa
+ 2272 0190 1E040000 		.4byte	.LASF29
+ 2273 0194 01       		.byte	0x1
+ 2274 0195 9B       		.byte	0x9b
+ 2275 0196 63010000 		.4byte	0x163
+ 2276 019a 02       		.uleb128 0x2
+ 2277 019b 91       		.byte	0x91
+ 2278 019c 6C       		.sleb128 -20
+ 2279 019d 10       		.uleb128 0x10
+ 2280 019e 21000000 		.4byte	.LASF31
+ 2281 01a2 01       		.byte	0x1
+ 2282 01a3 A4       		.byte	0xa4
+ 2283 01a4 A4000000 		.4byte	0xa4
+ 2284 01a8 02       		.uleb128 0x2
+ 2285 01a9 91       		.byte	0x91
+ 2286 01aa 77       		.sleb128 -9
+ 2287 01ab 10       		.uleb128 0x10
+ 2288 01ac 7A040000 		.4byte	.LASF32
+ 2289 01b0 01       		.byte	0x1
+ 2290 01b1 C1       		.byte	0xc1
+ 2291 01b2 A4000000 		.4byte	0xa4
+ 2292 01b6 02       		.uleb128 0x2
+ 2293 01b7 91       		.byte	0x91
+ 2294 01b8 76       		.sleb128 -10
+ 2295 01b9 00       		.byte	0
+ 2296 01ba 0E       		.uleb128 0xe
+ 2297 01bb 4C030000 		.4byte	.LASF34
+ 2298 01bf 01       		.byte	0x1
+ 2299 01c0 D7       		.byte	0xd7
+ 2300 01c1 00000000 		.4byte	.LFB66
+ 2301 01c5 58000000 		.4byte	.LFE66-.LFB66
+ 2302 01c9 01       		.uleb128 0x1
+ 2303 01ca 9C       		.byte	0x9c
+ 2304 01cb 0E       		.uleb128 0xe
+ 2305 01cc 5C010000 		.4byte	.LASF35
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 47
+
+
+ 2306 01d0 01       		.byte	0x1
+ 2307 01d1 E0       		.byte	0xe0
+ 2308 01d2 00000000 		.4byte	.LFB67
+ 2309 01d6 5C000000 		.4byte	.LFE67-.LFB67
+ 2310 01da 01       		.uleb128 0x1
+ 2311 01db 9C       		.byte	0x9c
+ 2312 01dc 0E       		.uleb128 0xe
+ 2313 01dd C7030000 		.4byte	.LASF36
+ 2314 01e1 01       		.byte	0x1
+ 2315 01e2 ED       		.byte	0xed
+ 2316 01e3 00000000 		.4byte	.LFB68
+ 2317 01e7 5C000000 		.4byte	.LFE68-.LFB68
+ 2318 01eb 01       		.uleb128 0x1
+ 2319 01ec 9C       		.byte	0x9c
+ 2320 01ed 11       		.uleb128 0x11
+ 2321 01ee A0020000 		.4byte	.LASF38
+ 2322 01f2 01       		.byte	0x1
+ 2323 01f3 FC       		.byte	0xfc
+ 2324 01f4 00000000 		.4byte	.LFB69
+ 2325 01f8 28020000 		.4byte	.LFE69-.LFB69
+ 2326 01fc 01       		.uleb128 0x1
+ 2327 01fd 9C       		.byte	0x9c
+ 2328 01fe 2B020000 		.4byte	0x22b
+ 2329 0202 0A       		.uleb128 0xa
+ 2330 0203 1E040000 		.4byte	.LASF29
+ 2331 0207 01       		.byte	0x1
+ 2332 0208 FC       		.byte	0xfc
+ 2333 0209 63010000 		.4byte	0x163
+ 2334 020d 02       		.uleb128 0x2
+ 2335 020e 91       		.byte	0x91
+ 2336 020f 6C       		.sleb128 -20
+ 2337 0210 0A       		.uleb128 0xa
+ 2338 0211 50040000 		.4byte	.LASF30
+ 2339 0215 01       		.byte	0x1
+ 2340 0216 FC       		.byte	0xfc
+ 2341 0217 B0000000 		.4byte	0xb0
+ 2342 021b 02       		.uleb128 0x2
+ 2343 021c 91       		.byte	0x91
+ 2344 021d 6A       		.sleb128 -22
+ 2345 021e 12       		.uleb128 0x12
+ 2346 021f 6900     		.ascii	"i\000"
+ 2347 0221 01       		.byte	0x1
+ 2348 0222 FF       		.byte	0xff
+ 2349 0223 B0000000 		.4byte	0xb0
+ 2350 0227 02       		.uleb128 0x2
+ 2351 0228 91       		.byte	0x91
+ 2352 0229 76       		.sleb128 -10
+ 2353 022a 00       		.byte	0
+ 2354 022b 13       		.uleb128 0x13
+ 2355 022c 63030000 		.4byte	.LASF39
+ 2356 0230 01       		.byte	0x1
+ 2357 0231 2A01     		.2byte	0x12a
+ 2358 0233 00000000 		.4byte	.LFB70
+ 2359 0237 90000000 		.4byte	.LFE70-.LFB70
+ 2360 023b 01       		.uleb128 0x1
+ 2361 023c 9C       		.byte	0x9c
+ 2362 023d 60020000 		.4byte	0x260
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 48
+
+
+ 2363 0241 14       		.uleb128 0x14
+ 2364 0242 1E040000 		.4byte	.LASF29
+ 2365 0246 01       		.byte	0x1
+ 2366 0247 2A01     		.2byte	0x12a
+ 2367 0249 63010000 		.4byte	0x163
+ 2368 024d 02       		.uleb128 0x2
+ 2369 024e 91       		.byte	0x91
+ 2370 024f 74       		.sleb128 -12
+ 2371 0250 14       		.uleb128 0x14
+ 2372 0251 50040000 		.4byte	.LASF30
+ 2373 0255 01       		.byte	0x1
+ 2374 0256 2A01     		.2byte	0x12a
+ 2375 0258 B0000000 		.4byte	0xb0
+ 2376 025c 02       		.uleb128 0x2
+ 2377 025d 91       		.byte	0x91
+ 2378 025e 72       		.sleb128 -14
+ 2379 025f 00       		.byte	0
+ 2380 0260 15       		.uleb128 0x15
+ 2381 0261 6D040000 		.4byte	.LASF40
+ 2382 0265 06       		.byte	0x6
+ 2383 0266 9606     		.2byte	0x696
+ 2384 0268 6C020000 		.4byte	0x26c
+ 2385 026c 16       		.uleb128 0x16
+ 2386 026d 99000000 		.4byte	0x99
+ 2387 0271 17       		.uleb128 0x17
+ 2388 0272 79030000 		.4byte	.LASF41
+ 2389 0276 05       		.byte	0x5
+ 2390 0277 11       		.byte	0x11
+ 2391 0278 C8000000 		.4byte	0xc8
+ 2392 027c 05       		.uleb128 0x5
+ 2393 027d 03       		.byte	0x3
+ 2394 027e 00000000 		.4byte	quad_cnt_left
+ 2395 0282 17       		.uleb128 0x17
+ 2396 0283 EC030000 		.4byte	.LASF42
+ 2397 0287 05       		.byte	0x5
+ 2398 0288 12       		.byte	0x12
+ 2399 0289 C8000000 		.4byte	0xc8
+ 2400 028d 05       		.uleb128 0x5
+ 2401 028e 03       		.byte	0x3
+ 2402 028f 00000000 		.4byte	quad_cnt_right
+ 2403 0293 17       		.uleb128 0x17
+ 2404 0294 AA040000 		.4byte	.LASF43
+ 2405 0298 05       		.byte	0x5
+ 2406 0299 13       		.byte	0x13
+ 2407 029a C8000000 		.4byte	0xc8
+ 2408 029e 05       		.uleb128 0x5
+ 2409 029f 03       		.byte	0x3
+ 2410 02a0 00000000 		.4byte	quad_cnt_prev
+ 2411 02a4 17       		.uleb128 0x17
+ 2412 02a5 92000000 		.4byte	.LASF44
+ 2413 02a9 05       		.byte	0x5
+ 2414 02aa 14       		.byte	0x14
+ 2415 02ab A4000000 		.4byte	0xa4
+ 2416 02af 05       		.uleb128 0x5
+ 2417 02b0 03       		.byte	0x3
+ 2418 02b1 00000000 		.4byte	straight_line_distance
+ 2419 02b5 17       		.uleb128 0x17
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 49
+
+
+ 2420 02b6 F0000000 		.4byte	.LASF45
+ 2421 02ba 05       		.byte	0x5
+ 2422 02bb 15       		.byte	0x15
+ 2423 02bc A4000000 		.4byte	0xa4
+ 2424 02c0 05       		.uleb128 0x5
+ 2425 02c1 03       		.byte	0x3
+ 2426 02c2 00000000 		.4byte	distance_prev
+ 2427 02c6 17       		.uleb128 0x17
+ 2428 02c7 B5020000 		.4byte	.LASF46
+ 2429 02cb 05       		.byte	0x5
+ 2430 02cc 18       		.byte	0x18
+ 2431 02cd A4000000 		.4byte	0xa4
+ 2432 02d1 05       		.uleb128 0x5
+ 2433 02d2 03       		.byte	0x3
+ 2434 02d3 00000000 		.4byte	pwm_cmp_left
+ 2435 02d7 17       		.uleb128 0x17
+ 2436 02d8 05040000 		.4byte	.LASF47
+ 2437 02dc 05       		.byte	0x5
+ 2438 02dd 19       		.byte	0x19
+ 2439 02de A4000000 		.4byte	0xa4
+ 2440 02e2 05       		.uleb128 0x5
+ 2441 02e3 03       		.byte	0x3
+ 2442 02e4 00000000 		.4byte	pwm_cmp_right
+ 2443 02e8 17       		.uleb128 0x17
+ 2444 02e9 63000000 		.4byte	.LASF48
+ 2445 02ed 05       		.byte	0x5
+ 2446 02ee 1D       		.byte	0x1d
+ 2447 02ef A4000000 		.4byte	0xa4
+ 2448 02f3 05       		.uleb128 0x5
+ 2449 02f4 03       		.byte	0x3
+ 2450 02f5 00000000 		.4byte	robot_direction
+ 2451 02f9 17       		.uleb128 0x17
+ 2452 02fa 00000000 		.4byte	.LASF49
+ 2453 02fe 05       		.byte	0x5
+ 2454 02ff 20       		.byte	0x20
+ 2455 0300 A4000000 		.4byte	0xa4
+ 2456 0304 05       		.uleb128 0x5
+ 2457 0305 03       		.byte	0x3
+ 2458 0306 00000000 		.4byte	robot_x_pos
+ 2459 030a 17       		.uleb128 0x17
+ 2460 030b 71010000 		.4byte	.LASF50
+ 2461 030f 05       		.byte	0x5
+ 2462 0310 21       		.byte	0x21
+ 2463 0311 A4000000 		.4byte	0xa4
+ 2464 0315 05       		.uleb128 0x5
+ 2465 0316 03       		.byte	0x3
+ 2466 0317 00000000 		.4byte	robot_y_pos
+ 2467 031b 17       		.uleb128 0x17
+ 2468 031c BA000000 		.4byte	.LASF51
+ 2469 0320 05       		.byte	0x5
+ 2470 0321 24       		.byte	0x24
+ 2471 0322 B0000000 		.4byte	0xb0
+ 2472 0326 05       		.uleb128 0x5
+ 2473 0327 03       		.byte	0x3
+ 2474 0328 00000000 		.4byte	num_map_nodes
+ 2475 032c 0B       		.uleb128 0xb
+ 2476 032d BC000000 		.4byte	0xbc
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 50
+
+
+ 2477 0331 42030000 		.4byte	0x342
+ 2478 0335 0C       		.uleb128 0xc
+ 2479 0336 76000000 		.4byte	0x76
+ 2480 033a 03       		.byte	0x3
+ 2481 033b 0C       		.uleb128 0xc
+ 2482 033c 76000000 		.4byte	0x76
+ 2483 0340 01       		.byte	0x1
+ 2484 0341 00       		.byte	0
+ 2485 0342 17       		.uleb128 0x17
+ 2486 0343 10030000 		.4byte	.LASF52
+ 2487 0347 05       		.byte	0x5
+ 2488 0348 27       		.byte	0x27
+ 2489 0349 2C030000 		.4byte	0x32c
+ 2490 034d 05       		.uleb128 0x5
+ 2491 034e 03       		.byte	0x3
+ 2492 034f 00000000 		.4byte	orientation
+ 2493 0353 17       		.uleb128 0x17
+ 2494 0354 35040000 		.4byte	.LASF53
+ 2495 0358 05       		.byte	0x5
+ 2496 0359 2E       		.byte	0x2e
+ 2497 035a A4000000 		.4byte	0xa4
+ 2498 035e 05       		.uleb128 0x5
+ 2499 035f 03       		.byte	0x3
+ 2500 0360 00000000 		.4byte	robot_orientation
+ 2501 0364 17       		.uleb128 0x17
+ 2502 0365 84040000 		.4byte	.LASF54
+ 2503 0369 05       		.byte	0x5
+ 2504 036a 2F       		.byte	0x2f
+ 2505 036b 75030000 		.4byte	0x375
+ 2506 036f 05       		.uleb128 0x5
+ 2507 0370 03       		.byte	0x3
+ 2508 0371 00000000 		.4byte	path_orientation
+ 2509 0375 0D       		.uleb128 0xd
+ 2510 0376 04       		.byte	0x4
+ 2511 0377 BC000000 		.4byte	0xbc
+ 2512 037b 17       		.uleb128 0x17
+ 2513 037c 16000000 		.4byte	.LASF55
+ 2514 0380 05       		.byte	0x5
+ 2515 0381 32       		.byte	0x32
+ 2516 0382 B0000000 		.4byte	0xb0
+ 2517 0386 05       		.uleb128 0x5
+ 2518 0387 03       		.byte	0x3
+ 2519 0388 00000000 		.4byte	path_index
+ 2520 038c 17       		.uleb128 0x17
+ 2521 038d 95040000 		.4byte	.LASF56
+ 2522 0391 05       		.byte	0x5
+ 2523 0392 33       		.byte	0x33
+ 2524 0393 B0000000 		.4byte	0xb0
+ 2525 0397 05       		.uleb128 0x5
+ 2526 0398 03       		.byte	0x3
+ 2527 0399 00000000 		.4byte	robot_position_index
+ 2528 039d 17       		.uleb128 0x17
+ 2529 039e 87030000 		.4byte	.LASF57
+ 2530 03a2 05       		.byte	0x5
+ 2531 03a3 34       		.byte	0x34
+ 2532 03a4 B0000000 		.4byte	0xb0
+ 2533 03a8 05       		.uleb128 0x5
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 51
+
+
+ 2534 03a9 03       		.byte	0x3
+ 2535 03aa 00000000 		.4byte	next_event_index
+ 2536 03ae 17       		.uleb128 0x17
+ 2537 03af 73020000 		.4byte	.LASF58
+ 2538 03b3 05       		.byte	0x5
+ 2539 03b4 37       		.byte	0x37
+ 2540 03b5 A4000000 		.4byte	0xa4
+ 2541 03b9 05       		.uleb128 0x5
+ 2542 03ba 03       		.byte	0x3
+ 2543 03bb 00000000 		.4byte	flag_turn_around
+ 2544 03bf 17       		.uleb128 0x17
+ 2545 03c0 32000000 		.4byte	.LASF59
+ 2546 03c4 05       		.byte	0x5
+ 2547 03c5 38       		.byte	0x38
+ 2548 03c6 A4000000 		.4byte	0xa4
+ 2549 03ca 05       		.uleb128 0x5
+ 2550 03cb 03       		.byte	0x3
+ 2551 03cc 00000000 		.4byte	flag_veering
+ 2552 03d0 17       		.uleb128 0x17
+ 2553 03d1 0B020000 		.4byte	.LASF60
+ 2554 03d5 05       		.byte	0x5
+ 2555 03d6 39       		.byte	0x39
+ 2556 03d7 A4000000 		.4byte	0xa4
+ 2557 03db 05       		.uleb128 0x5
+ 2558 03dc 03       		.byte	0x3
+ 2559 03dd 00000000 		.4byte	flag_new_path_index
+ 2560 03e1 17       		.uleb128 0x17
+ 2561 03e2 FA020000 		.4byte	.LASF61
+ 2562 03e6 05       		.byte	0x5
+ 2563 03e7 3A       		.byte	0x3a
+ 2564 03e8 A4000000 		.4byte	0xa4
+ 2565 03ec 05       		.uleb128 0x5
+ 2566 03ed 03       		.byte	0x3
+ 2567 03ee 00000000 		.4byte	flag_passing_next_int
+ 2568 03f2 17       		.uleb128 0x17
+ 2569 03f3 D4030000 		.4byte	.LASF62
+ 2570 03f7 05       		.byte	0x5
+ 2571 03f8 3B       		.byte	0x3b
+ 2572 03f9 A4000000 		.4byte	0xa4
+ 2573 03fd 05       		.uleb128 0x5
+ 2574 03fe 03       		.byte	0x3
+ 2575 03ff 00000000 		.4byte	flag_next_event_deadend
+ 2576 0403 17       		.uleb128 0x17
+ 2577 0404 3F000000 		.4byte	.LASF63
+ 2578 0408 05       		.byte	0x5
+ 2579 0409 3C       		.byte	0x3c
+ 2580 040a A4000000 		.4byte	0xa4
+ 2581 040e 05       		.uleb128 0x5
+ 2582 040f 03       		.byte	0x3
+ 2583 0410 00000000 		.4byte	flag_next_event_u_turn
+ 2584 0414 17       		.uleb128 0x17
+ 2585 0415 73000000 		.4byte	.LASF64
+ 2586 0419 05       		.byte	0x5
+ 2587 041a 3D       		.byte	0x3d
+ 2588 041b A4000000 		.4byte	0xa4
+ 2589 041f 05       		.uleb128 0x5
+ 2590 0420 03       		.byte	0x3
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 52
+
+
+ 2591 0421 00000000 		.4byte	flag_centre_on_line_after_turn
+ 2592 0425 17       		.uleb128 0x17
+ 2593 0426 B8040000 		.4byte	.LASF65
+ 2594 042a 05       		.byte	0x5
+ 2595 042b 3E       		.byte	0x3e
+ 2596 042c A4000000 		.4byte	0xa4
+ 2597 0430 05       		.uleb128 0x5
+ 2598 0431 03       		.byte	0x3
+ 2599 0432 00000000 		.4byte	flag_next_event_intersection
+ 2600 0436 17       		.uleb128 0x17
+ 2601 0437 3F020000 		.4byte	.LASF66
+ 2602 043b 05       		.byte	0x5
+ 2603 043c 41       		.byte	0x41
+ 2604 043d A4000000 		.4byte	0xa4
+ 2605 0441 05       		.uleb128 0x5
+ 2606 0442 03       		.byte	0x3
+ 2607 0443 00000000 		.4byte	int_sensor_left
+ 2608 0447 17       		.uleb128 0x17
+ 2609 0448 5C040000 		.4byte	.LASF67
+ 2610 044c 05       		.byte	0x5
+ 2611 044d 42       		.byte	0x42
+ 2612 044e A4000000 		.4byte	0xa4
+ 2613 0452 05       		.uleb128 0x5
+ 2614 0453 03       		.byte	0x3
+ 2615 0454 00000000 		.4byte	int_sensor_right
+ 2616 0458 17       		.uleb128 0x17
+ 2617 0459 27020000 		.4byte	.LASF68
+ 2618 045d 05       		.byte	0x5
+ 2619 045e 43       		.byte	0x43
+ 2620 045f A4000000 		.4byte	0xa4
+ 2621 0463 05       		.uleb128 0x5
+ 2622 0464 03       		.byte	0x3
+ 2623 0465 00000000 		.4byte	line_sensor_centre
+ 2624 0469 17       		.uleb128 0x17
+ 2625 046a 62020000 		.4byte	.LASF69
+ 2626 046e 05       		.byte	0x5
+ 2627 046f 44       		.byte	0x44
+ 2628 0470 A4000000 		.4byte	0xa4
+ 2629 0474 05       		.uleb128 0x5
+ 2630 0475 03       		.byte	0x3
+ 2631 0476 00000000 		.4byte	line_sensor_left
+ 2632 047a 17       		.uleb128 0x17
+ 2633 047b 23040000 		.4byte	.LASF70
+ 2634 047f 05       		.byte	0x5
+ 2635 0480 45       		.byte	0x45
+ 2636 0481 A4000000 		.4byte	0xa4
+ 2637 0485 05       		.uleb128 0x5
+ 2638 0486 03       		.byte	0x3
+ 2639 0487 00000000 		.4byte	line_sensor_right
+ 2640 048b 17       		.uleb128 0x17
+ 2641 048c 4F020000 		.4byte	.LASF71
+ 2642 0490 05       		.byte	0x5
+ 2643 0491 48       		.byte	0x48
+ 2644 0492 B0000000 		.4byte	0xb0
+ 2645 0496 05       		.uleb128 0x5
+ 2646 0497 03       		.byte	0x3
+ 2647 0498 00000000 		.4byte	tc_cnt
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 53
+
+
+ 2648 049c 17       		.uleb128 0x17
+ 2649 049d 1C030000 		.4byte	.LASF72
+ 2650 04a1 05       		.byte	0x5
+ 2651 04a2 4B       		.byte	0x4b
+ 2652 04a3 A4000000 		.4byte	0xa4
+ 2653 04a7 05       		.uleb128 0x5
+ 2654 04a8 03       		.byte	0x3
+ 2655 04a9 00000000 		.4byte	flag_adc_ready
+ 2656 04ad 0B       		.uleb128 0xb
+ 2657 04ae 68000000 		.4byte	0x68
+ 2658 04b2 C3040000 		.4byte	0x4c3
+ 2659 04b6 0C       		.uleb128 0xc
+ 2660 04b7 76000000 		.4byte	0x76
+ 2661 04bb 0E       		.byte	0xe
+ 2662 04bc 0C       		.uleb128 0xc
+ 2663 04bd 76000000 		.4byte	0x76
+ 2664 04c1 12       		.byte	0x12
+ 2665 04c2 00       		.byte	0
+ 2666 04c3 18       		.uleb128 0x18
+ 2667 04c4 6D617000 		.ascii	"map\000"
+ 2668 04c8 07       		.byte	0x7
+ 2669 04c9 11       		.byte	0x11
+ 2670 04ca AD040000 		.4byte	0x4ad
+ 2671 04ce 05       		.uleb128 0x5
+ 2672 04cf 03       		.byte	0x3
+ 2673 04d0 00000000 		.4byte	map
+ 2674 04d4 0B       		.uleb128 0xb
+ 2675 04d5 68000000 		.4byte	0x68
+ 2676 04d9 EA040000 		.4byte	0x4ea
+ 2677 04dd 0C       		.uleb128 0xc
+ 2678 04de 76000000 		.4byte	0x76
+ 2679 04e2 05       		.byte	0x5
+ 2680 04e3 0C       		.uleb128 0xc
+ 2681 04e4 76000000 		.4byte	0x76
+ 2682 04e8 01       		.byte	0x1
+ 2683 04e9 00       		.byte	0
+ 2684 04ea 17       		.uleb128 0x17
+ 2685 04eb BD030000 		.4byte	.LASF73
+ 2686 04ef 07       		.byte	0x7
+ 2687 04f0 23       		.byte	0x23
+ 2688 04f1 D4040000 		.4byte	0x4d4
+ 2689 04f5 05       		.uleb128 0x5
+ 2690 04f6 03       		.byte	0x3
+ 2691 04f7 00000000 		.4byte	food_list
+ 2692 04fb 00       		.byte	0
+ 2693              		.section	.debug_abbrev,"",%progbits
+ 2694              	.Ldebug_abbrev0:
+ 2695 0000 01       		.uleb128 0x1
+ 2696 0001 11       		.uleb128 0x11
+ 2697 0002 01       		.byte	0x1
+ 2698 0003 25       		.uleb128 0x25
+ 2699 0004 0E       		.uleb128 0xe
+ 2700 0005 13       		.uleb128 0x13
+ 2701 0006 0B       		.uleb128 0xb
+ 2702 0007 03       		.uleb128 0x3
+ 2703 0008 0E       		.uleb128 0xe
+ 2704 0009 1B       		.uleb128 0x1b
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 54
+
+
+ 2705 000a 0E       		.uleb128 0xe
+ 2706 000b 55       		.uleb128 0x55
+ 2707 000c 17       		.uleb128 0x17
+ 2708 000d 11       		.uleb128 0x11
+ 2709 000e 01       		.uleb128 0x1
+ 2710 000f 10       		.uleb128 0x10
+ 2711 0010 17       		.uleb128 0x17
+ 2712 0011 00       		.byte	0
+ 2713 0012 00       		.byte	0
+ 2714 0013 02       		.uleb128 0x2
+ 2715 0014 24       		.uleb128 0x24
+ 2716 0015 00       		.byte	0
+ 2717 0016 0B       		.uleb128 0xb
+ 2718 0017 0B       		.uleb128 0xb
+ 2719 0018 3E       		.uleb128 0x3e
+ 2720 0019 0B       		.uleb128 0xb
+ 2721 001a 03       		.uleb128 0x3
+ 2722 001b 0E       		.uleb128 0xe
+ 2723 001c 00       		.byte	0
+ 2724 001d 00       		.byte	0
+ 2725 001e 03       		.uleb128 0x3
+ 2726 001f 16       		.uleb128 0x16
+ 2727 0020 00       		.byte	0
+ 2728 0021 03       		.uleb128 0x3
+ 2729 0022 0E       		.uleb128 0xe
+ 2730 0023 3A       		.uleb128 0x3a
+ 2731 0024 0B       		.uleb128 0xb
+ 2732 0025 3B       		.uleb128 0x3b
+ 2733 0026 0B       		.uleb128 0xb
+ 2734 0027 49       		.uleb128 0x49
+ 2735 0028 13       		.uleb128 0x13
+ 2736 0029 00       		.byte	0
+ 2737 002a 00       		.byte	0
+ 2738 002b 04       		.uleb128 0x4
+ 2739 002c 24       		.uleb128 0x24
+ 2740 002d 00       		.byte	0
+ 2741 002e 0B       		.uleb128 0xb
+ 2742 002f 0B       		.uleb128 0xb
+ 2743 0030 3E       		.uleb128 0x3e
+ 2744 0031 0B       		.uleb128 0xb
+ 2745 0032 03       		.uleb128 0x3
+ 2746 0033 08       		.uleb128 0x8
+ 2747 0034 00       		.byte	0
+ 2748 0035 00       		.byte	0
+ 2749 0036 05       		.uleb128 0x5
+ 2750 0037 16       		.uleb128 0x16
+ 2751 0038 00       		.byte	0
+ 2752 0039 03       		.uleb128 0x3
+ 2753 003a 0E       		.uleb128 0xe
+ 2754 003b 3A       		.uleb128 0x3a
+ 2755 003c 0B       		.uleb128 0xb
+ 2756 003d 3B       		.uleb128 0x3b
+ 2757 003e 05       		.uleb128 0x5
+ 2758 003f 49       		.uleb128 0x49
+ 2759 0040 13       		.uleb128 0x13
+ 2760 0041 00       		.byte	0
+ 2761 0042 00       		.byte	0
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 55
+
+
+ 2762 0043 06       		.uleb128 0x6
+ 2763 0044 04       		.uleb128 0x4
+ 2764 0045 01       		.byte	0x1
+ 2765 0046 03       		.uleb128 0x3
+ 2766 0047 0E       		.uleb128 0xe
+ 2767 0048 0B       		.uleb128 0xb
+ 2768 0049 0B       		.uleb128 0xb
+ 2769 004a 3A       		.uleb128 0x3a
+ 2770 004b 0B       		.uleb128 0xb
+ 2771 004c 3B       		.uleb128 0x3b
+ 2772 004d 0B       		.uleb128 0xb
+ 2773 004e 01       		.uleb128 0x1
+ 2774 004f 13       		.uleb128 0x13
+ 2775 0050 00       		.byte	0
+ 2776 0051 00       		.byte	0
+ 2777 0052 07       		.uleb128 0x7
+ 2778 0053 28       		.uleb128 0x28
+ 2779 0054 00       		.byte	0
+ 2780 0055 03       		.uleb128 0x3
+ 2781 0056 0E       		.uleb128 0xe
+ 2782 0057 1C       		.uleb128 0x1c
+ 2783 0058 0D       		.uleb128 0xd
+ 2784 0059 00       		.byte	0
+ 2785 005a 00       		.byte	0
+ 2786 005b 08       		.uleb128 0x8
+ 2787 005c 28       		.uleb128 0x28
+ 2788 005d 00       		.byte	0
+ 2789 005e 03       		.uleb128 0x3
+ 2790 005f 08       		.uleb128 0x8
+ 2791 0060 1C       		.uleb128 0x1c
+ 2792 0061 0D       		.uleb128 0xd
+ 2793 0062 00       		.byte	0
+ 2794 0063 00       		.byte	0
+ 2795 0064 09       		.uleb128 0x9
+ 2796 0065 2E       		.uleb128 0x2e
+ 2797 0066 01       		.byte	0x1
+ 2798 0067 3F       		.uleb128 0x3f
+ 2799 0068 19       		.uleb128 0x19
+ 2800 0069 03       		.uleb128 0x3
+ 2801 006a 0E       		.uleb128 0xe
+ 2802 006b 3A       		.uleb128 0x3a
+ 2803 006c 0B       		.uleb128 0xb
+ 2804 006d 3B       		.uleb128 0x3b
+ 2805 006e 0B       		.uleb128 0xb
+ 2806 006f 27       		.uleb128 0x27
+ 2807 0070 19       		.uleb128 0x19
+ 2808 0071 49       		.uleb128 0x49
+ 2809 0072 13       		.uleb128 0x13
+ 2810 0073 11       		.uleb128 0x11
+ 2811 0074 01       		.uleb128 0x1
+ 2812 0075 12       		.uleb128 0x12
+ 2813 0076 06       		.uleb128 0x6
+ 2814 0077 40       		.uleb128 0x40
+ 2815 0078 18       		.uleb128 0x18
+ 2816 0079 9642     		.uleb128 0x2116
+ 2817 007b 19       		.uleb128 0x19
+ 2818 007c 01       		.uleb128 0x1
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 56
+
+
+ 2819 007d 13       		.uleb128 0x13
+ 2820 007e 00       		.byte	0
+ 2821 007f 00       		.byte	0
+ 2822 0080 0A       		.uleb128 0xa
+ 2823 0081 05       		.uleb128 0x5
+ 2824 0082 00       		.byte	0
+ 2825 0083 03       		.uleb128 0x3
+ 2826 0084 0E       		.uleb128 0xe
+ 2827 0085 3A       		.uleb128 0x3a
+ 2828 0086 0B       		.uleb128 0xb
+ 2829 0087 3B       		.uleb128 0x3b
+ 2830 0088 0B       		.uleb128 0xb
+ 2831 0089 49       		.uleb128 0x49
+ 2832 008a 13       		.uleb128 0x13
+ 2833 008b 02       		.uleb128 0x2
+ 2834 008c 18       		.uleb128 0x18
+ 2835 008d 00       		.byte	0
+ 2836 008e 00       		.byte	0
+ 2837 008f 0B       		.uleb128 0xb
+ 2838 0090 01       		.uleb128 0x1
+ 2839 0091 01       		.byte	0x1
+ 2840 0092 49       		.uleb128 0x49
+ 2841 0093 13       		.uleb128 0x13
+ 2842 0094 01       		.uleb128 0x1
+ 2843 0095 13       		.uleb128 0x13
+ 2844 0096 00       		.byte	0
+ 2845 0097 00       		.byte	0
+ 2846 0098 0C       		.uleb128 0xc
+ 2847 0099 21       		.uleb128 0x21
+ 2848 009a 00       		.byte	0
+ 2849 009b 49       		.uleb128 0x49
+ 2850 009c 13       		.uleb128 0x13
+ 2851 009d 2F       		.uleb128 0x2f
+ 2852 009e 0B       		.uleb128 0xb
+ 2853 009f 00       		.byte	0
+ 2854 00a0 00       		.byte	0
+ 2855 00a1 0D       		.uleb128 0xd
+ 2856 00a2 0F       		.uleb128 0xf
+ 2857 00a3 00       		.byte	0
+ 2858 00a4 0B       		.uleb128 0xb
+ 2859 00a5 0B       		.uleb128 0xb
+ 2860 00a6 49       		.uleb128 0x49
+ 2861 00a7 13       		.uleb128 0x13
+ 2862 00a8 00       		.byte	0
+ 2863 00a9 00       		.byte	0
+ 2864 00aa 0E       		.uleb128 0xe
+ 2865 00ab 2E       		.uleb128 0x2e
+ 2866 00ac 00       		.byte	0
+ 2867 00ad 3F       		.uleb128 0x3f
+ 2868 00ae 19       		.uleb128 0x19
+ 2869 00af 03       		.uleb128 0x3
+ 2870 00b0 0E       		.uleb128 0xe
+ 2871 00b1 3A       		.uleb128 0x3a
+ 2872 00b2 0B       		.uleb128 0xb
+ 2873 00b3 3B       		.uleb128 0x3b
+ 2874 00b4 0B       		.uleb128 0xb
+ 2875 00b5 11       		.uleb128 0x11
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 57
+
+
+ 2876 00b6 01       		.uleb128 0x1
+ 2877 00b7 12       		.uleb128 0x12
+ 2878 00b8 06       		.uleb128 0x6
+ 2879 00b9 40       		.uleb128 0x40
+ 2880 00ba 18       		.uleb128 0x18
+ 2881 00bb 9642     		.uleb128 0x2116
+ 2882 00bd 19       		.uleb128 0x19
+ 2883 00be 00       		.byte	0
+ 2884 00bf 00       		.byte	0
+ 2885 00c0 0F       		.uleb128 0xf
+ 2886 00c1 2E       		.uleb128 0x2e
+ 2887 00c2 01       		.byte	0x1
+ 2888 00c3 3F       		.uleb128 0x3f
+ 2889 00c4 19       		.uleb128 0x19
+ 2890 00c5 03       		.uleb128 0x3
+ 2891 00c6 0E       		.uleb128 0xe
+ 2892 00c7 3A       		.uleb128 0x3a
+ 2893 00c8 0B       		.uleb128 0xb
+ 2894 00c9 3B       		.uleb128 0x3b
+ 2895 00ca 0B       		.uleb128 0xb
+ 2896 00cb 27       		.uleb128 0x27
+ 2897 00cc 19       		.uleb128 0x19
+ 2898 00cd 11       		.uleb128 0x11
+ 2899 00ce 01       		.uleb128 0x1
+ 2900 00cf 12       		.uleb128 0x12
+ 2901 00d0 06       		.uleb128 0x6
+ 2902 00d1 40       		.uleb128 0x40
+ 2903 00d2 18       		.uleb128 0x18
+ 2904 00d3 9642     		.uleb128 0x2116
+ 2905 00d5 19       		.uleb128 0x19
+ 2906 00d6 01       		.uleb128 0x1
+ 2907 00d7 13       		.uleb128 0x13
+ 2908 00d8 00       		.byte	0
+ 2909 00d9 00       		.byte	0
+ 2910 00da 10       		.uleb128 0x10
+ 2911 00db 34       		.uleb128 0x34
+ 2912 00dc 00       		.byte	0
+ 2913 00dd 03       		.uleb128 0x3
+ 2914 00de 0E       		.uleb128 0xe
+ 2915 00df 3A       		.uleb128 0x3a
+ 2916 00e0 0B       		.uleb128 0xb
+ 2917 00e1 3B       		.uleb128 0x3b
+ 2918 00e2 0B       		.uleb128 0xb
+ 2919 00e3 49       		.uleb128 0x49
+ 2920 00e4 13       		.uleb128 0x13
+ 2921 00e5 02       		.uleb128 0x2
+ 2922 00e6 18       		.uleb128 0x18
+ 2923 00e7 00       		.byte	0
+ 2924 00e8 00       		.byte	0
+ 2925 00e9 11       		.uleb128 0x11
+ 2926 00ea 2E       		.uleb128 0x2e
+ 2927 00eb 01       		.byte	0x1
+ 2928 00ec 3F       		.uleb128 0x3f
+ 2929 00ed 19       		.uleb128 0x19
+ 2930 00ee 03       		.uleb128 0x3
+ 2931 00ef 0E       		.uleb128 0xe
+ 2932 00f0 3A       		.uleb128 0x3a
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 58
+
+
+ 2933 00f1 0B       		.uleb128 0xb
+ 2934 00f2 3B       		.uleb128 0x3b
+ 2935 00f3 0B       		.uleb128 0xb
+ 2936 00f4 27       		.uleb128 0x27
+ 2937 00f5 19       		.uleb128 0x19
+ 2938 00f6 11       		.uleb128 0x11
+ 2939 00f7 01       		.uleb128 0x1
+ 2940 00f8 12       		.uleb128 0x12
+ 2941 00f9 06       		.uleb128 0x6
+ 2942 00fa 40       		.uleb128 0x40
+ 2943 00fb 18       		.uleb128 0x18
+ 2944 00fc 9742     		.uleb128 0x2117
+ 2945 00fe 19       		.uleb128 0x19
+ 2946 00ff 01       		.uleb128 0x1
+ 2947 0100 13       		.uleb128 0x13
+ 2948 0101 00       		.byte	0
+ 2949 0102 00       		.byte	0
+ 2950 0103 12       		.uleb128 0x12
+ 2951 0104 34       		.uleb128 0x34
+ 2952 0105 00       		.byte	0
+ 2953 0106 03       		.uleb128 0x3
+ 2954 0107 08       		.uleb128 0x8
+ 2955 0108 3A       		.uleb128 0x3a
+ 2956 0109 0B       		.uleb128 0xb
+ 2957 010a 3B       		.uleb128 0x3b
+ 2958 010b 0B       		.uleb128 0xb
+ 2959 010c 49       		.uleb128 0x49
+ 2960 010d 13       		.uleb128 0x13
+ 2961 010e 02       		.uleb128 0x2
+ 2962 010f 18       		.uleb128 0x18
+ 2963 0110 00       		.byte	0
+ 2964 0111 00       		.byte	0
+ 2965 0112 13       		.uleb128 0x13
+ 2966 0113 2E       		.uleb128 0x2e
+ 2967 0114 01       		.byte	0x1
+ 2968 0115 3F       		.uleb128 0x3f
+ 2969 0116 19       		.uleb128 0x19
+ 2970 0117 03       		.uleb128 0x3
+ 2971 0118 0E       		.uleb128 0xe
+ 2972 0119 3A       		.uleb128 0x3a
+ 2973 011a 0B       		.uleb128 0xb
+ 2974 011b 3B       		.uleb128 0x3b
+ 2975 011c 05       		.uleb128 0x5
+ 2976 011d 27       		.uleb128 0x27
+ 2977 011e 19       		.uleb128 0x19
+ 2978 011f 11       		.uleb128 0x11
+ 2979 0120 01       		.uleb128 0x1
+ 2980 0121 12       		.uleb128 0x12
+ 2981 0122 06       		.uleb128 0x6
+ 2982 0123 40       		.uleb128 0x40
+ 2983 0124 18       		.uleb128 0x18
+ 2984 0125 9642     		.uleb128 0x2116
+ 2985 0127 19       		.uleb128 0x19
+ 2986 0128 01       		.uleb128 0x1
+ 2987 0129 13       		.uleb128 0x13
+ 2988 012a 00       		.byte	0
+ 2989 012b 00       		.byte	0
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 59
+
+
+ 2990 012c 14       		.uleb128 0x14
+ 2991 012d 05       		.uleb128 0x5
+ 2992 012e 00       		.byte	0
+ 2993 012f 03       		.uleb128 0x3
+ 2994 0130 0E       		.uleb128 0xe
+ 2995 0131 3A       		.uleb128 0x3a
+ 2996 0132 0B       		.uleb128 0xb
+ 2997 0133 3B       		.uleb128 0x3b
+ 2998 0134 05       		.uleb128 0x5
+ 2999 0135 49       		.uleb128 0x49
+ 3000 0136 13       		.uleb128 0x13
+ 3001 0137 02       		.uleb128 0x2
+ 3002 0138 18       		.uleb128 0x18
+ 3003 0139 00       		.byte	0
+ 3004 013a 00       		.byte	0
+ 3005 013b 15       		.uleb128 0x15
+ 3006 013c 34       		.uleb128 0x34
+ 3007 013d 00       		.byte	0
+ 3008 013e 03       		.uleb128 0x3
+ 3009 013f 0E       		.uleb128 0xe
+ 3010 0140 3A       		.uleb128 0x3a
+ 3011 0141 0B       		.uleb128 0xb
+ 3012 0142 3B       		.uleb128 0x3b
+ 3013 0143 05       		.uleb128 0x5
+ 3014 0144 49       		.uleb128 0x49
+ 3015 0145 13       		.uleb128 0x13
+ 3016 0146 3F       		.uleb128 0x3f
+ 3017 0147 19       		.uleb128 0x19
+ 3018 0148 3C       		.uleb128 0x3c
+ 3019 0149 19       		.uleb128 0x19
+ 3020 014a 00       		.byte	0
+ 3021 014b 00       		.byte	0
+ 3022 014c 16       		.uleb128 0x16
+ 3023 014d 35       		.uleb128 0x35
+ 3024 014e 00       		.byte	0
+ 3025 014f 49       		.uleb128 0x49
+ 3026 0150 13       		.uleb128 0x13
+ 3027 0151 00       		.byte	0
+ 3028 0152 00       		.byte	0
+ 3029 0153 17       		.uleb128 0x17
+ 3030 0154 34       		.uleb128 0x34
+ 3031 0155 00       		.byte	0
+ 3032 0156 03       		.uleb128 0x3
+ 3033 0157 0E       		.uleb128 0xe
+ 3034 0158 3A       		.uleb128 0x3a
+ 3035 0159 0B       		.uleb128 0xb
+ 3036 015a 3B       		.uleb128 0x3b
+ 3037 015b 0B       		.uleb128 0xb
+ 3038 015c 49       		.uleb128 0x49
+ 3039 015d 13       		.uleb128 0x13
+ 3040 015e 3F       		.uleb128 0x3f
+ 3041 015f 19       		.uleb128 0x19
+ 3042 0160 02       		.uleb128 0x2
+ 3043 0161 18       		.uleb128 0x18
+ 3044 0162 00       		.byte	0
+ 3045 0163 00       		.byte	0
+ 3046 0164 18       		.uleb128 0x18
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 60
+
+
+ 3047 0165 34       		.uleb128 0x34
+ 3048 0166 00       		.byte	0
+ 3049 0167 03       		.uleb128 0x3
+ 3050 0168 08       		.uleb128 0x8
+ 3051 0169 3A       		.uleb128 0x3a
+ 3052 016a 0B       		.uleb128 0xb
+ 3053 016b 3B       		.uleb128 0x3b
+ 3054 016c 0B       		.uleb128 0xb
+ 3055 016d 49       		.uleb128 0x49
+ 3056 016e 13       		.uleb128 0x13
+ 3057 016f 3F       		.uleb128 0x3f
+ 3058 0170 19       		.uleb128 0x19
+ 3059 0171 02       		.uleb128 0x2
+ 3060 0172 18       		.uleb128 0x18
+ 3061 0173 00       		.byte	0
+ 3062 0174 00       		.byte	0
+ 3063 0175 00       		.byte	0
+ 3064              		.section	.debug_aranges,"",%progbits
+ 3065 0000 54000000 		.4byte	0x54
+ 3066 0004 0200     		.2byte	0x2
+ 3067 0006 00000000 		.4byte	.Ldebug_info0
+ 3068 000a 04       		.byte	0x4
+ 3069 000b 00       		.byte	0
+ 3070 000c 0000     		.2byte	0
+ 3071 000e 0000     		.2byte	0
+ 3072 0010 00000000 		.4byte	.LFB63
+ 3073 0014 30020000 		.4byte	.LFE63-.LFB63
+ 3074 0018 00000000 		.4byte	.LFB64
+ 3075 001c 5C010000 		.4byte	.LFE64-.LFB64
+ 3076 0020 00000000 		.4byte	.LFB65
+ 3077 0024 20020000 		.4byte	.LFE65-.LFB65
+ 3078 0028 00000000 		.4byte	.LFB66
+ 3079 002c 58000000 		.4byte	.LFE66-.LFB66
+ 3080 0030 00000000 		.4byte	.LFB67
+ 3081 0034 5C000000 		.4byte	.LFE67-.LFB67
+ 3082 0038 00000000 		.4byte	.LFB68
+ 3083 003c 5C000000 		.4byte	.LFE68-.LFB68
+ 3084 0040 00000000 		.4byte	.LFB69
+ 3085 0044 28020000 		.4byte	.LFE69-.LFB69
+ 3086 0048 00000000 		.4byte	.LFB70
+ 3087 004c 90000000 		.4byte	.LFE70-.LFB70
+ 3088 0050 00000000 		.4byte	0
+ 3089 0054 00000000 		.4byte	0
+ 3090              		.section	.debug_ranges,"",%progbits
+ 3091              	.Ldebug_ranges0:
+ 3092 0000 00000000 		.4byte	.LFB63
+ 3093 0004 30020000 		.4byte	.LFE63
+ 3094 0008 00000000 		.4byte	.LFB64
+ 3095 000c 5C010000 		.4byte	.LFE64
+ 3096 0010 00000000 		.4byte	.LFB65
+ 3097 0014 20020000 		.4byte	.LFE65
+ 3098 0018 00000000 		.4byte	.LFB66
+ 3099 001c 58000000 		.4byte	.LFE66
+ 3100 0020 00000000 		.4byte	.LFB67
+ 3101 0024 5C000000 		.4byte	.LFE67
+ 3102 0028 00000000 		.4byte	.LFB68
+ 3103 002c 5C000000 		.4byte	.LFE68
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 61
+
+
+ 3104 0030 00000000 		.4byte	.LFB69
+ 3105 0034 28020000 		.4byte	.LFE69
+ 3106 0038 00000000 		.4byte	.LFB70
+ 3107 003c 90000000 		.4byte	.LFE70
+ 3108 0040 00000000 		.4byte	0
+ 3109 0044 00000000 		.4byte	0
+ 3110              		.section	.debug_line,"",%progbits
+ 3111              	.Ldebug_line0:
+ 3112 0000 8A030000 		.section	.debug_str,"MS",%progbits,1
+ 3112      02006101 
+ 3112      00000201 
+ 3112      FB0E0D00 
+ 3112      01010101 
+ 3113              	.LASF49:
+ 3114 0000 726F626F 		.ascii	"robot_x_pos\000"
+ 3114      745F785F 
+ 3114      706F7300 
+ 3115              	.LASF75:
+ 3116 000c 2E5C7461 		.ascii	".\\tacho.c\000"
+ 3116      63686F2E 
+ 3116      6300
+ 3117              	.LASF55:
+ 3118 0016 70617468 		.ascii	"path_index\000"
+ 3118      5F696E64 
+ 3118      657800
+ 3119              	.LASF31:
+ 3120 0021 6E65775F 		.ascii	"new_orient\000"
+ 3120      6F726965 
+ 3120      6E7400
+ 3121              	.LASF26:
+ 3122 002c 52494748 		.ascii	"RIGHT\000"
+ 3122      5400
+ 3123              	.LASF59:
+ 3124 0032 666C6167 		.ascii	"flag_veering\000"
+ 3124      5F766565 
+ 3124      72696E67 
+ 3124      00
+ 3125              	.LASF63:
+ 3126 003f 666C6167 		.ascii	"flag_next_event_u_turn\000"
+ 3126      5F6E6578 
+ 3126      745F6576 
+ 3126      656E745F 
+ 3126      755F7475 
+ 3127              	.LASF21:
+ 3128 0056 5455524E 		.ascii	"TURNING_LEFT\000"
+ 3128      494E475F 
+ 3128      4C454654 
+ 3128      00
+ 3129              	.LASF48:
+ 3130 0063 726F626F 		.ascii	"robot_direction\000"
+ 3130      745F6469 
+ 3130      72656374 
+ 3130      696F6E00 
+ 3131              	.LASF64:
+ 3132 0073 666C6167 		.ascii	"flag_centre_on_line_after_turn\000"
+ 3132      5F63656E 
+ 3132      7472655F 
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 62
+
+
+ 3132      6F6E5F6C 
+ 3132      696E655F 
+ 3133              	.LASF44:
+ 3134 0092 73747261 		.ascii	"straight_line_distance\000"
+ 3134      69676874 
+ 3134      5F6C696E 
+ 3134      655F6469 
+ 3134      7374616E 
+ 3135              	.LASF23:
+ 3136 00a9 53544154 		.ascii	"STAT\000"
+ 3136      00
+ 3137              	.LASF13:
+ 3138 00ae 6C6F6E67 		.ascii	"long double\000"
+ 3138      20646F75 
+ 3138      626C6500 
+ 3139              	.LASF51:
+ 3140 00ba 6E756D5F 		.ascii	"num_map_nodes\000"
+ 3140      6D61705F 
+ 3140      6E6F6465 
+ 3140      7300
+ 3141              	.LASF2:
+ 3142 00c8 73686F72 		.ascii	"short int\000"
+ 3142      7420696E 
+ 3142      7400
+ 3143              	.LASF17:
+ 3144 00d2 75696E74 		.ascii	"uint16\000"
+ 3144      313600
+ 3145              	.LASF37:
+ 3146 00d9 7475726E 		.ascii	"turn_robot\000"
+ 3146      5F726F62 
+ 3146      6F7400
+ 3147              	.LASF19:
+ 3148 00e4 696E7431 		.ascii	"int16\000"
+ 3148      3600
+ 3149              	.LASF16:
+ 3150 00ea 75696E74 		.ascii	"uint8\000"
+ 3150      3800
+ 3151              	.LASF45:
+ 3152 00f0 64697374 		.ascii	"distance_prev\000"
+ 3152      616E6365 
+ 3152      5F707265 
+ 3152      7600
+ 3153              	.LASF12:
+ 3154 00fe 666C6F61 		.ascii	"float\000"
+ 3154      7400
+ 3155              	.LASF25:
+ 3156 0104 6F726965 		.ascii	"orientations\000"
+ 3156      6E746174 
+ 3156      696F6E73 
+ 3156      00
+ 3157              	.LASF6:
+ 3158 0111 6C6F6E67 		.ascii	"long long int\000"
+ 3158      206C6F6E 
+ 3158      6720696E 
+ 3158      7400
+ 3159              	.LASF76:
+ 3160 011f 433A5C55 		.ascii	"C:\\Users\\louis\\Desktop\\psoc_code_base\\CS301_Cl"
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 63
+
+
+ 3160      73657273 
+ 3160      5C6C6F75 
+ 3160      69735C44 
+ 3160      65736B74 
+ 3161 014d 6173732E 		.ascii	"ass.cydsn\000"
+ 3161      63796473 
+ 3161      6E00
+ 3162              	.LASF18:
+ 3163 0157 696E7438 		.ascii	"int8\000"
+ 3163      00
+ 3164              	.LASF35:
+ 3165 015c 6765745F 		.ascii	"get_wheel_quadrature\000"
+ 3165      77686565 
+ 3165      6C5F7175 
+ 3165      61647261 
+ 3165      74757265 
+ 3166              	.LASF50:
+ 3167 0171 726F626F 		.ascii	"robot_y_pos\000"
+ 3167      745F795F 
+ 3167      706F7300 
+ 3168              	.LASF74:
+ 3169 017d 474E5520 		.ascii	"GNU C 4.9.3 20150303 (release) [ARM/embedded-4_9-br"
+ 3169      4320342E 
+ 3169      392E3320 
+ 3169      32303135 
+ 3169      30333033 
+ 3170 01b0 616E6368 		.ascii	"anch revision 221220] -mcpu=cortex-m3 -mthumb -g -O"
+ 3170      20726576 
+ 3170      6973696F 
+ 3170      6E203232 
+ 3170      31323230 
+ 3171 01e3 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 3171      66756E63 
+ 3171      74696F6E 
+ 3171      2D736563 
+ 3171      74696F6E 
+ 3172              	.LASF60:
+ 3173 020b 666C6167 		.ascii	"flag_new_path_index\000"
+ 3173      5F6E6577 
+ 3173      5F706174 
+ 3173      685F696E 
+ 3173      64657800 
+ 3174              	.LASF20:
+ 3175 021f 464F5257 		.ascii	"FORWARD\000"
+ 3175      41524400 
+ 3176              	.LASF68:
+ 3177 0227 6C696E65 		.ascii	"line_sensor_centre\000"
+ 3177      5F73656E 
+ 3177      736F725F 
+ 3177      63656E74 
+ 3177      726500
+ 3178              	.LASF28:
+ 3179 023a 4C454654 		.ascii	"LEFT\000"
+ 3179      00
+ 3180              	.LASF66:
+ 3181 023f 696E745F 		.ascii	"int_sensor_left\000"
+ 3181      73656E73 
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 64
+
+
+ 3181      6F725F6C 
+ 3181      65667400 
+ 3182              	.LASF71:
+ 3183 024f 74635F63 		.ascii	"tc_cnt\000"
+ 3183      6E7400
+ 3184              	.LASF33:
+ 3185 0256 666F6C6C 		.ascii	"follow_line\000"
+ 3185      6F775F6C 
+ 3185      696E6500 
+ 3186              	.LASF69:
+ 3187 0262 6C696E65 		.ascii	"line_sensor_left\000"
+ 3187      5F73656E 
+ 3187      736F725F 
+ 3187      6C656674 
+ 3187      00
+ 3188              	.LASF58:
+ 3189 0273 666C6167 		.ascii	"flag_turn_around\000"
+ 3189      5F747572 
+ 3189      6E5F6172 
+ 3189      6F756E64 
+ 3189      00
+ 3190              	.LASF1:
+ 3191 0284 756E7369 		.ascii	"unsigned char\000"
+ 3191      676E6564 
+ 3191      20636861 
+ 3191      7200
+ 3192              	.LASF22:
+ 3193 0292 5455524E 		.ascii	"TURNING_RIGHT\000"
+ 3193      494E475F 
+ 3193      52494748 
+ 3193      5400
+ 3194              	.LASF38:
+ 3195 02a0 6765745F 		.ascii	"get_next_event_index\000"
+ 3195      6E657874 
+ 3195      5F657665 
+ 3195      6E745F69 
+ 3195      6E646578 
+ 3196              	.LASF46:
+ 3197 02b5 70776D5F 		.ascii	"pwm_cmp_left\000"
+ 3197      636D705F 
+ 3197      6C656674 
+ 3197      00
+ 3198              	.LASF0:
+ 3199 02c2 7369676E 		.ascii	"signed char\000"
+ 3199      65642063 
+ 3199      68617200 
+ 3200              	.LASF15:
+ 3201 02ce 696E7433 		.ascii	"int32_t\000"
+ 3201      325F7400 
+ 3202              	.LASF7:
+ 3203 02d6 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 3203      206C6F6E 
+ 3203      6720756E 
+ 3203      7369676E 
+ 3203      65642069 
+ 3204              	.LASF8:
+ 3205 02ed 756E7369 		.ascii	"unsigned int\000"
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 65
+
+
+ 3205      676E6564 
+ 3205      20696E74 
+ 3205      00
+ 3206              	.LASF61:
+ 3207 02fa 666C6167 		.ascii	"flag_passing_next_int\000"
+ 3207      5F706173 
+ 3207      73696E67 
+ 3207      5F6E6578 
+ 3207      745F696E 
+ 3208              	.LASF52:
+ 3209 0310 6F726965 		.ascii	"orientation\000"
+ 3209      6E746174 
+ 3209      696F6E00 
+ 3210              	.LASF72:
+ 3211 031c 666C6167 		.ascii	"flag_adc_ready\000"
+ 3211      5F616463 
+ 3211      5F726561 
+ 3211      647900
+ 3212              	.LASF3:
+ 3213 032b 73686F72 		.ascii	"short unsigned int\000"
+ 3213      7420756E 
+ 3213      7369676E 
+ 3213      65642069 
+ 3213      6E7400
+ 3214              	.LASF10:
+ 3215 033e 63686172 		.ascii	"char\000"
+ 3215      00
+ 3216              	.LASF4:
+ 3217 0343 6C6F6E67 		.ascii	"long int\000"
+ 3217      20696E74 
+ 3217      00
+ 3218              	.LASF34:
+ 3219 034c 6765745F 		.ascii	"get_light_sensors\000"
+ 3219      6C696768 
+ 3219      745F7365 
+ 3219      6E736F72 
+ 3219      7300
+ 3220              	.LASF27:
+ 3221 035e 444F574E 		.ascii	"DOWN\000"
+ 3221      00
+ 3222              	.LASF39:
+ 3223 0363 75706461 		.ascii	"update_robot_position\000"
+ 3223      74655F72 
+ 3223      6F626F74 
+ 3223      5F706F73 
+ 3223      6974696F 
+ 3224              	.LASF41:
+ 3225 0379 71756164 		.ascii	"quad_cnt_left\000"
+ 3225      5F636E74 
+ 3225      5F6C6566 
+ 3225      7400
+ 3226              	.LASF57:
+ 3227 0387 6E657874 		.ascii	"next_event_index\000"
+ 3227      5F657665 
+ 3227      6E745F69 
+ 3227      6E646578 
+ 3227      00
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 66
+
+
+ 3228              	.LASF5:
+ 3229 0398 6C6F6E67 		.ascii	"long unsigned int\000"
+ 3229      20756E73 
+ 3229      69676E65 
+ 3229      6420696E 
+ 3229      7400
+ 3230              	.LASF11:
+ 3231 03aa 646F7562 		.ascii	"double\000"
+ 3231      6C6500
+ 3232              	.LASF77:
+ 3233 03b1 666F6C6C 		.ascii	"follow_path\000"
+ 3233      6F775F70 
+ 3233      61746800 
+ 3234              	.LASF73:
+ 3235 03bd 666F6F64 		.ascii	"food_list\000"
+ 3235      5F6C6973 
+ 3235      7400
+ 3236              	.LASF36:
+ 3237 03c7 6765745F 		.ascii	"get_distance\000"
+ 3237      64697374 
+ 3237      616E6365 
+ 3237      00
+ 3238              	.LASF62:
+ 3239 03d4 666C6167 		.ascii	"flag_next_event_deadend\000"
+ 3239      5F6E6578 
+ 3239      745F6576 
+ 3239      656E745F 
+ 3239      64656164 
+ 3240              	.LASF42:
+ 3241 03ec 71756164 		.ascii	"quad_cnt_right\000"
+ 3241      5F636E74 
+ 3241      5F726967 
+ 3241      687400
+ 3242              	.LASF14:
+ 3243 03fb 5F5F696E 		.ascii	"__int32_t\000"
+ 3243      7433325F 
+ 3243      7400
+ 3244              	.LASF47:
+ 3245 0405 70776D5F 		.ascii	"pwm_cmp_right\000"
+ 3245      636D705F 
+ 3245      72696768 
+ 3245      7400
+ 3246              	.LASF24:
+ 3247 0413 64697265 		.ascii	"directions\000"
+ 3247      6374696F 
+ 3247      6E7300
+ 3248              	.LASF29:
+ 3249 041e 70617468 		.ascii	"path\000"
+ 3249      00
+ 3250              	.LASF70:
+ 3251 0423 6C696E65 		.ascii	"line_sensor_right\000"
+ 3251      5F73656E 
+ 3251      736F725F 
+ 3251      72696768 
+ 3251      7400
+ 3252              	.LASF53:
+ 3253 0435 726F626F 		.ascii	"robot_orientation\000"
+ARM GAS  C:\Users\louis\AppData\Local\Temp\ccvVZGFY.s 			page 67
+
+
+ 3253      745F6F72 
+ 3253      69656E74 
+ 3253      6174696F 
+ 3253      6E00
+ 3254              	.LASF9:
+ 3255 0447 73697A65 		.ascii	"sizetype\000"
+ 3255      74797065 
+ 3255      00
+ 3256              	.LASF30:
+ 3257 0450 70617468 		.ascii	"path_length\000"
+ 3257      5F6C656E 
+ 3257      67746800 
+ 3258              	.LASF67:
+ 3259 045c 696E745F 		.ascii	"int_sensor_right\000"
+ 3259      73656E73 
+ 3259      6F725F72 
+ 3259      69676874 
+ 3259      00
+ 3260              	.LASF40:
+ 3261 046d 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 3261      52784275 
+ 3261      66666572 
+ 3261      00
+ 3262              	.LASF32:
+ 3263 047a 7475726E 		.ascii	"turn_quad\000"
+ 3263      5F717561 
+ 3263      6400
+ 3264              	.LASF54:
+ 3265 0484 70617468 		.ascii	"path_orientation\000"
+ 3265      5F6F7269 
+ 3265      656E7461 
+ 3265      74696F6E 
+ 3265      00
+ 3266              	.LASF56:
+ 3267 0495 726F626F 		.ascii	"robot_position_index\000"
+ 3267      745F706F 
+ 3267      73697469 
+ 3267      6F6E5F69 
+ 3267      6E646578 
+ 3268              	.LASF43:
+ 3269 04aa 71756164 		.ascii	"quad_cnt_prev\000"
+ 3269      5F636E74 
+ 3269      5F707265 
+ 3269      7600
+ 3270              	.LASF65:
+ 3271 04b8 666C6167 		.ascii	"flag_next_event_intersection\000"
+ 3271      5F6E6578 
+ 3271      745F6576 
+ 3271      656E745F 
+ 3271      696E7465 
+ 3272              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 4.9.3 20150303 (release) [ARM/embedded-4_9-br
